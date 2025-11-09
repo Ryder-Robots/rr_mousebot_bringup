@@ -20,8 +20,15 @@ def generate_launch_description():
             namespace='rr_udp_server_node',
             executable='rr_udp_server_node',
             name='rr_udp',
-            # parameters=[LaunchConfiguration('src/transport_drivers/udp_driver/params/example_udp_params.yml')]
             # arguments=['--ros-args', '--log-level', 'DEBUG'],
             remappings=[('/udp_read', '/udp_bridge_node_cmd/udp_read')]
-        )
+        ),
+
+          Node(
+            package='rr_state_mgm_srv',
+            namespace='rr_state_manager',
+            executable='rr_state_mgm_srv_node',
+            name='rr_state_manager',
+            arguments=['--ros-args', '--log-level', 'DEBUG']
+        )      
     ])
