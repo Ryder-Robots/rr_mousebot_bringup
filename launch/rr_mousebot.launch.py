@@ -20,11 +20,11 @@ def generate_launch_description():
             namespace='rr_udp_server_node',
             executable='rr_udp_server_node',
             name='rr_udp',
-            # arguments=['--ros-args', '--log-level', 'DEBUG'],
+            arguments=['--ros-args', '--log-level', 'INFO'],
             remappings=[('/udp_read', '/udp_bridge_node_cmd/udp_read')]
         ),
 
-          Node(
+        Node(
             package='rr_state_mgm_srv',
             namespace='rr_state_manager',
             executable='rr_state_mgm_srv_node',
