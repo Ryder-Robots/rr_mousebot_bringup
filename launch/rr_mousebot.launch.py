@@ -25,12 +25,12 @@ def generate_launch_description():
             remappings=[('/udp_read', '/udp_bridge_node_cmd/udp_read')]
         )
 
-        ,LifecycleNode(
-            package='rr_state_mgm_srv',
-            output='screen',
-            namespace='',
-            executable='rr_state_mgm_srv_node',
-            name='rr_state_manager',
-            arguments=['--ros-args', '--log-level', 'DEBUG']
-        )  
+        # ,LifecycleNode(
+        #     package='rr_state_mgm_srv',
+        #     output='screen',
+        #     namespace='',
+        #     executable='rr_state_mgm_srv_node',
+        #     name='rr_state_manager',
+        #     arguments=['--ros-args', '--log-level', 'DEBUG']
+        # )  
     ])
