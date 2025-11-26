@@ -4,6 +4,19 @@
 
 ```bash
 sudo apt update
+
+# Install transport driver from the following documenation https://github.com/ros-drivers/transport_drivers
+
+source install/setup.bash
+
+# install interfaces
+# https://github.com/Ryder-Robots/rr_interfaces
+
+# install common base
+# https://github.com/Ryder-Robots/rr_common_base
+
+# install state manager service
+
 sudo apt install ros-${ROS_DISTRO}-launch ros-${ROS_DISTRO}-launch-ros
 
 ```
