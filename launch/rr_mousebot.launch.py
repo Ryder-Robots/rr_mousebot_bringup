@@ -10,18 +10,18 @@ def generate_launch_description():
             executable='udp_bridge_node_exe',
             name='udp_bridge',
             parameters=[{
-                "ip": '192.168.2.3',
+                "ip": '192.168.2.8',
                 "port": 57410,
             }]
         ),
 
         LifecycleNode(
             package='rr_joystick',
-            namespace='rr_udp_server_node',
+            namespace='rr_sensors',
             output='screen',
             executable='rr_joystick_pub',
             name='joystick',
-            arguments=['--ros-args', '--log-level', 'INFO'],
+            arguments=['--ros-args', '--log-level', 'DEBUG'],
                 parameters=[{'transport_plugin': 'rr_common_plugins::rr_udp_plugins::RrJoySubscriberUdpPlugin'}],
             remappings=[('/udp_read', '/udp_bridge_node_cmd/udp_read')]
         ),
@@ -29,7 +29,7 @@ def generate_launch_description():
         LifecycleNode(
             package='rr_state_mgm_srv',
             output='screen',
-            namespace='',
+            namespace='state',
             executable='rr_state_mgm_srv_node',
             name='rr_state_manager',
             arguments=['--ros-args', '--log-level', 'DEBUG']
