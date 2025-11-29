@@ -60,12 +60,15 @@ def generate_launch_description():
             package='rclcpp_components',
             executable='component_container',
             composable_node_descriptions=[
-                ComposableNode(
-                    package='rr_joystick',
-                    plugin='rrobot::rr_joystick::RRJoystickNode',
-                    parameters=[{'transport_plugin': 'rr_common_plugins::rr_udp_plugins::RrJoySubscriberUdpPlugin'}, {'--log-level': 'DEBUG'}],
-                    extra_arguments=[{'use_intra_process_comms': True}],
-                )
+                ## Currently the joystick node doesn't want to behave itself when runnning as a component.
+                ## I will need to investigate the reason why, but it seems fine if running as its own
+                ## executable. (Mmmmm Gremlins)
+                # ComposableNode(
+                #     package='rr_joystick',
+                #     plugin='rrobot::rr_joystick::RRJoystickNode',
+                #     parameters=[{'transport_plugin': 'rr_common_plugins::rr_udp_plugins::RrJoySubscriberUdpPlugin'}, {'--log-level': 'DEBUG'}],
+                #     extra_arguments=[{'use_intra_process_comms': True}],
+                # )
             ]
         ),
 
