@@ -26,3 +26,14 @@ sudo apt install ros-${ROS_DISTRO}-launch ros-${ROS_DISTRO}-launch-ros
 ```bash
 ros2 launch rr_mousebot_bringup rr_mousebot.launch.py
 ```
+
+## Manually configuring nodes
+
+```bash
+ ros2 lifecycle get /serial_bridge_node
+ # unconfigured [1]
+ ros2 lifecycle set /serial_bridge_node configure
+ # Transitioning successful
+ ros2 lifecycle set /serial_bridge_node activate
+ # Transitioning successful
+```

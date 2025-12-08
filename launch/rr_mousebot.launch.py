@@ -24,7 +24,7 @@ def generate_launch_description():
     """launch composable nodes"""
     return launch.LaunchDescription([
 
-        # Low level communications, serial, and UDP, or bridges to fliht controller.
+        # Low level communications, serial, and UDP, or bridges to flight controller.
         ComposableNodeContainer(
             name='driver_container',
             namespace='driver',
@@ -48,7 +48,19 @@ def generate_launch_description():
                         "port": 57410,
                     }],
                     extra_arguments=[{'use_intra_process_comms': True}],
-                ),      
+                ),
+                ComposableNode(
+                    package='serial_driver',
+                    plugin='drivers::serial_driver::SerialBridgeNode',
+                    parameters=[{
+                        "device_name": '/dev/ttyACM0',
+                        "baud_rate": 115200,
+                        "flow_control": "none",
+                        "parity": "none",
+                        "stop_bits": "1"
+                    }],
+                    extra_arguments=[{'use_intra_process_comms': True}],
+                ),
             ],
         ),
 
