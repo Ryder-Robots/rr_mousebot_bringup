@@ -82,7 +82,7 @@ def generate_launch_description():
                 #     extra_arguments=[{'use_intra_process_comms': True}],
                 # )
                 ComposableNode(
-                    package="rr_imu_action_node",
+                    package="rr_imu_action",
                     plugin="rr_imu_action::RrImuActionNode",
                     parameters=[{'transport_plugin': 'rr_common_plugins::rr_serial_plugins::ImuActionSerialPlugin'}],
                     extra_arguments=[
