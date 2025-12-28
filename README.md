@@ -56,6 +56,22 @@ State management and control logic:
 
 All nodes are configured to use intra-process communication for reduced latency.
 
+## Schematic Directory
+
+The [schematic/](schematic/) directory contains FreeCAD design files (.FCStd) for all mechanical and electrical components of the micromouse robot. These 3D CAD models are used for prototyping, assembly planning, and dimensional verification to ensure compliance with IEEE Micromouse specifications.
+
+Key component designs include:
+- Robot chassis and body assemblies
+- Motor and encoder mountings
+- Wheel designs (drive and caster wheels)
+- Electronics mounting (Raspberry Pi, Arduino Nano, power circuits)
+- Battery pack housing
+- Power management circuits (buck converters)
+
+The `stl/` subdirectory will be populated with STL files in future versions for 3D printing of custom components.
+
+For detailed information about individual components, see [schematic/README.md](schematic/README.md).
+
 ## Pre Install Steps
 
 ```bash
