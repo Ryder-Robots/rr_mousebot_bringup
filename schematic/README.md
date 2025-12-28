@@ -54,6 +54,59 @@ Battery pack housing and mounting design. Proper battery placement is critical f
 #### [buck_circuit.FCStd](buck_circuit.FCStd)
 Buck converter circuit mounting for power regulation. Buck converters step down the battery voltage to appropriate levels for different components (e.g., 5V for Raspberry Pi, 3.3V for sensors, motor voltage regulation).
 
+## Bill of Materials (BOM)
+
+This section lists the commercial off-the-shelf (COTS) components required to build the RR Mousebot. Prices are in AUD and include GST unless otherwise noted.
+
+### Computing and Control
+
+| Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
+|-----------|-----|----------|---------------------|----------|-------|
+| Raspberry Pi 4 Model B 8GB | CE06974 | 1 | $145.00 | [Core Electronics](https://core-electronics.com.au/raspberry-pi-4-model-b-8gb.html) | Main compute platform for ROS 2 and navigation algorithms. 1.5GHz quad-core ARM Cortex-A72, Gigabit Ethernet, dual-band WiFi, Bluetooth 5.0 |
+| Nano I/O Shield For Arduino Nano | DFR0012 | 1 | $12.95 | [Core Electronics](https://core-electronics.com.au/nano-i-o-shield-for-arduino-nano.html) | Expansion board with Gravity connectors for sensor/servo connections. Handles real-time motor control and sensor interfacing |
+
+### Sensors
+
+| Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
+|-----------|-----|----------|---------------------|----------|-------|
+| 360° Omni-directional Triangulation Lidar Dev Kit (8m range) | WS-24659 | 1 | $94.10 | [Core Electronics](https://core-electronics.com.au/360-omni-directional-triangulation-lidar-dev-kit-8m-range.html) | LD14P Lidar with 0.1-8m range, 1.5% accuracy, 6Hz scan rate. Includes USB-to-UART adapter. For maze wall detection and SLAM |
+| Wheel Encoders for DFRobot 3PA and 4WD Rovers | SEN0038 | 2 | $10.15 | [Core Electronics](https://core-electronics.com.au/wheel-encoders-for-dfrobot-3pa-and-4wd-rovers.html) | 20 PPR optical encoders for odometry. Non-contact angular displacement sensing. Includes grating disks and mounting hardware |
+
+### Mechanical Components
+
+| Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
+|-----------|-----|----------|---------------------|----------|-------|
+| Supporting Swivel Caster Wheel - 1.3" Diameter | ADA2942 | 1 | $5.75 | [Core Electronics](https://core-electronics.com.au/supporting-swivel-caster-wheel-1-3-diameter.html) | 360° rotating support wheel. 32.4mm diameter, 42mm total height. Provides third-point stability for two-wheeled robot |
+
+### Cables and Interconnects
+
+| Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
+|-----------|-----|----------|---------------------|----------|-------|
+| USB OTG Cable - Female A to Micro A - 4" | CAB-11604 | 2 | $7.65 | [Core Electronics](https://core-electronics.com.au/usb-otg-cable-female-a-to-micro-a-4.html) | USB On-The-Go cable for connecting peripherals. 4" length |
+
+### BOM Notes
+
+- **Total Component Cost** (listed items only): ~$292 AUD (excludes motors, motor drivers, battery pack, structural materials, and 3D printed parts)
+- **Additional Components Required** (not listed above):
+  - TT gear motors (2x) for main drive wheels
+  - Motor driver board (H-bridge for bidirectional control)
+  - Battery pack (LiPo or Li-ion, voltage TBD based on motor specifications)
+  - Buck converter modules for 5V (Raspberry Pi) and 3.3V (sensors) power rails
+  - Arduino Nano or compatible microcontroller
+  - Wiring, connectors, and miscellaneous hardware
+  - 3D printed structural components (chassis, motor mounts, sensor brackets)
+
+- **Quantity Discounts**: Available for most components when ordering 6+ or 10+ units
+- **Availability**: Most items ship same business day; Lidar has lead time (ships Jan 6-9, 2025)
+- **Supplier**: All components sourced from Core Electronics Australia for consistency
+
+### Component Selection Rationale
+
+- **Raspberry Pi 4 8GB**: Provides adequate computational power for ROS 2 nodes, SLAM algorithms, and path planning. 8GB RAM ensures headroom for development and debugging
+- **Lidar Sensor**: 8m range exceeds maze dimensions (~2.5m), 1.5% accuracy suitable for 18cm grid navigation, UART interface compatible with both Raspberry Pi and Arduino
+- **Wheel Encoders**: 20 PPR resolution provides ~1.8° angular resolution for odometry and closed-loop speed control
+- **Caster Wheel**: Small form factor (32.4mm) minimizes footprint while providing stable support
+
 ## Design Workflow
 
 1. **Individual Component Design**: Each mechanical and electrical component is designed in its own FreeCAD file with accurate dimensions and mounting features.
