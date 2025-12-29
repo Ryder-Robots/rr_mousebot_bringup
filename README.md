@@ -103,6 +103,8 @@ The `stl/` subdirectory will be populated with STL files in future versions for 
 
 For detailed information about individual components, see [schematic/README.md](schematic/README.md).
 
+For 3D printing instructions and assembly guidance, see [CONSTRUCTION.md](CONSTRUCTION.md).
+
 ## Dependencies and Installation
 
 ### ROS 2 System Requirements
