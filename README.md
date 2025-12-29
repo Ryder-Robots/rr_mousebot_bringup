@@ -56,6 +56,37 @@ State management and control logic:
 
 All nodes are configured to use intra-process communication for reduced latency.
 
+## Lifecycle Management Approach
+
+The system employs ROS 2 lifecycle nodes to manage operational modes and optimize power consumption during different phases of maze solving:
+
+### Operational Phases
+
+1. **Explore Mode** (LIDAR Active)
+   - System maps the 16x16 maze grid using LIDAR
+   - All sensors active for SLAM and navigation
+   - Typical duration: 10-15 minutes
+   - Power consumption: 3.7A (battery usage ~7-10%)
+   - Returns to home position after complete exploration
+
+2. **Planning Phase** (LIDAR Inactive)
+   - LIDAR lifecycle transitioned to INACTIVE state to conserve power
+   - Computes optimal path to center using A* or similar algorithm
+   - Minimal power consumption during computation
+
+3. **Run Mode** (LIDAR Inactive)
+   - Executes pre-computed optimal path at maximum speed
+   - LIDAR remains INACTIVE via lifecycle management
+   - Power consumption: 3.4A (300mA savings per run)
+   - Typical run duration: 30-60 seconds
+   - Battery usage per run: ~0.3-0.6%
+
+### Lifecycle Benefits
+
+- **Power Efficiency**: Disabling LIDAR during runs saves ~300mA, enabling 150-175 runs per battery charge after initial exploration
+- **Competition Ready**: Single battery supports 5-7 full competition attempts (explore + multiple runs) within 10-minute time limit
+- **Resource Management**: Systematic activation/deactivation of sensor nodes based on operational requirements
+
 ## Schematic Directory
 
 The [schematic/](schematic/) directory contains FreeCAD design files (.FCStd) for all mechanical and electrical components of the micromouse robot. These 3D CAD models are used for prototyping, assembly planning, and dimensional verification to ensure compliance with IEEE Micromouse specifications.
@@ -72,25 +103,76 @@ The `stl/` subdirectory will be populated with STL files in future versions for 
 
 For detailed information about individual components, see [schematic/README.md](schematic/README.md).
 
-## Pre Install Steps
+## Dependencies and Installation
+
+### ROS 2 System Requirements
+
+This package requires ROS 2 and several dependency packages. Install the following components in order:
+
+### Third-Party Dependencies
+
+1. **Transport Drivers** (serial/UDP communication)
+   ```bash
+   # Install from https://github.com/ros-drivers/transport_drivers
+   ```
+
+2. **NAV2** (SLAM and navigation - under review)
+   - Documentation: https://docs.nav2.org/tutorials/docs/navigation2_with_slam.html
+   ```bash
+   sudo apt install ros-${ROS_DISTRO}-nav2-bringup
+   ```
+
+### Ryder Robots Core Packages
+
+Install the following Ryder Robots packages in order:
+
+1. **Interfaces** (message/service definitions)
+   ```bash
+   # Clone and build: https://github.com/Ryder-Robots/rr_interfaces
+   ```
+
+2. **Common Base** (shared utilities and base classes)
+   ```bash
+   # Clone and build: https://github.com/Ryder-Robots/rr_common_base
+   ```
+
+3. **Common Plugins** (lifecycle and plugin components)
+   ```bash
+   # Clone and build: https://github.com/Ryder-Robots/rr_common_plugins
+   ```
+
+4. **Proto** (communication layer between Arduino and ROS 2)
+   ```bash
+   # Clone and build: https://github.com/Ryder-Robots/rr_proto
+   ```
+
+5. **Actions** (action server implementations)
+   ```bash
+   # Clone and build: https://github.com/Ryder-Robots/rr_imu_action
+   # Note: Will be renamed to rr_actions and include all action implementations
+   ```
+
+### Optional Development Tools
+
+- **Joystick Support** (recommended for testing and manual control)
+  ```bash
+  # Clone and build: https://github.com/Ryder-Robots/rr_joystick
+  ```
+
+### Arduino Firmware
+
+Flash the Arduino Nano 33 BLE Sense Rev2 with the micromouse firmware:
+- Repository: https://github.com/Ryder-Robots/rr_ble33_mousebot
+
+### ROS 2 Installation
 
 ```bash
 sudo apt update
-
-# Install transport driver from the following documenation https://github.com/ros-drivers/transport_drivers
-
-source install/setup.bash
-
-# install interfaces
-# https://github.com/Ryder-Robots/rr_interfaces
-
-# install common base
-# https://github.com/Ryder-Robots/rr_common_base
-
-# install state manager service
-
 sudo apt install ros-${ROS_DISTRO}-launch ros-${ROS_DISTRO}-launch-ros
 
+# Source your ROS 2 workspace
+source /opt/ros/${ROS_DISTRO}/setup.bash
+source install/setup.bash
 ```
 
 ## Launch Command
