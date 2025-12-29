@@ -8,7 +8,7 @@ This guide provides detailed instructions for 3D printing and assembling the RR 
 
 - **Printer**: Elegoo Centauri Carbon (enclosed)
 - **Filament Dryer**: Creality Filament Heater
-- **Recommended Slicer**: OrcaSlicer (or compatible)
+- **Recommended Slicer**: Elegoo Slicer (or compatible)
 
 ### Material Selection
 
@@ -49,7 +49,7 @@ PETG is hygroscopic and must be thoroughly dried before printing to prevent mois
 
 ### Elegoo Centauri Carbon Printer Settings
 
-Configure these settings in your slicer (OrcaSlicer recommended) for optimal PETG prints on the Centauri Carbon.
+Configure these settings in your slicer (Elegoo Slicer recommended) for optimal PETG prints on the Centauri Carbon.
 
 #### Temperature Settings
 
@@ -128,9 +128,9 @@ Configure these settings in your slicer (OrcaSlicer recommended) for optimal PET
 
 ---
 
-### OrcaSlicer Profile Template
+### Elegoo Slicer Profile Template
 
-Create a custom PETG profile in OrcaSlicer with these settings:
+Create a custom PETG profile in Elegoo Slicer with these settings:
 
 ```
 Filament: PETG
@@ -191,10 +191,10 @@ Supports: Yes (manual placement recommended)
 
 ### Wheel Hubs and Drive Components
 
-**Priority**: Precision and strength
+**Priority**: Maximum strength and precision
 
 ```
-Infill: 40% Grid
+Infill: 100% Solid
 Walls: 4
 Top/Bottom Layers: 5
 Layer Height: 0.12mm (fine detail)
@@ -298,7 +298,7 @@ ABS settings for final production builds will be documented here once prototypin
 - Elegoo Centauri Carbon Manual: [Manufacturer Documentation]
 - Creality Filament Dryer Settings: [Product Specifications]
 - PETG Material Properties: [Material Database]
-- OrcaSlicer Documentation: https://github.com/SoftFever/OrcaSlicer
+- Elegoo Slicer Documentation: [Elegoo Support]
 
 ---
 
