@@ -194,6 +194,30 @@ ros2 launch rr_mousebot_bringup rr_mousebot.launch.py
  # Transitioning successful
 ```
 
+## Developer Notes
+
+### Repository Architecture
+
+This repository (`rr_mousebot_bringup`) contains all **mazebot-specific** components and configuration. All other repositories used by this project are designed to be **generic and reusable** across different robotic platforms and applications.
+
+**Mazebot-Specific (this repository):**
+- Launch configurations for the micromouse robot
+- Hardware-specific parameter files
+- Mazebot system integration and bringup logic
+- Bill of Materials (BOM) and construction documentation
+- Mechanical design files and schematics
+
+**Generic/Reusable Repositories:**
+- `rr_interfaces`: Common ROS 2 message and service definitions
+- `rr_common_base`: Base lifecycle node implementations
+- `rr_common_plugins`: Pluginlib-based navigation and control plugins
+- `rr_proto`: Protocol buffer definitions for serial communication
+- `rr_imu_action`: IMU-based action server implementations (being refactored to `rr_actions`)
+- `rr_joystick`: Joystick/gamepad input handling
+- `transport_drivers`: Serial and UDP communication drivers
+
+These generic repositories can be used in other robotic projects, providing a modular foundation for ROS 2-based systems. Only `rr_mousebot_bringup` ties these components together into the specific mazebot application.
+
 ## References
 
 Christiansen, D. (1977) 'The Amazing Micromouse Contest', *IEEE Spectrum*, 14(5). Available at: https://spectrum.ieee.org/the-amazing-micromouse-contest (Accessed: 13 December 2025).
