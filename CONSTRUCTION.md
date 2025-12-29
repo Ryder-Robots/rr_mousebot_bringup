@@ -241,12 +241,34 @@ After printing parts with heat-set insert holes:
 
 - Light sanding with 400-grit sandpaper for smoother surfaces
 - Acetone vapor smoothing NOT recommended for PETG (use for ABS only)
+- **IMPORTANT**: Wear non-static gloves during sanding to prevent contaminants from adhering to components
+
+### Component Washing
+
+After support removal and sanding are complete, all printed components should be thoroughly cleaned:
+
+1. **Wash Process**:
+   - Use lukewarm water with a light detergent (dish soap works well)
+   - Gently scrub all surfaces to remove dust, oils, and particulates from printing and post-processing
+   - Pay special attention to areas where supports were removed
+   - Rinse thoroughly with clean water to remove all detergent residue
+
+2. **Drying**:
+   - Allow components to air dry completely in a clean, dust-free environment
+   - Can use compressed air to accelerate drying in hard-to-reach areas
+   - Ensure components are **thoroughly dried** before proceeding to assembly
+   - Typical drying time: 2-4 hours (longer for complex geometries with internal cavities)
+
+3. **Safety Notes**:
+   - Wear non-static gloves throughout the washing and drying process to prevent contamination
+   - Do NOT use hot water as it may deform PETG parts
+   - Avoid harsh chemicals or solvents that could weaken the plastic
 
 ### Assembly Preparation
 
 - Test fit all components before final assembly
 - Verify heat-set inserts are properly seated
-- Clean all contact surfaces with isopropyl alcohol
+- Clean all contact surfaces with isopropyl alcohol if additional cleaning is needed
 
 ---
 
@@ -287,9 +309,8 @@ ABS settings for final production builds will be documented here once prototypin
 | Motor Mounts (pair) | 2-4 hours | 40-60g |
 | Wheel Hubs (pair) | 1-2 hours | 20-30g |
 | Electronic Enclosures | 3-6 hours | 80-120g |
-| Battery Holder | 2-3 hours | 50-70g |
 
-**Total Estimated Material**: 400-600g PETG for complete robot
+**Total Estimated Material**: 350-530g PETG for complete robot
 
 ---
 
