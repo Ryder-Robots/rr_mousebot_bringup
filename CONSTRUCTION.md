@@ -2,6 +2,22 @@
 
 This guide provides detailed instructions for 3D printing and assembling the RR Mousebot chassis and mechanical components.
 
+## STL Files
+
+All 3D printable files are located in the `schematic/stl/` directory. Files are provided in both STL and 3MF formats:
+
+**Available Files:**
+- `body.stl` / `body.3mf`: Main robot chassis
+- `drive_shaft.stl` / `drive_shaft.3mf`: Motor drive shaft
+
+**Format Recommendations:**
+- **3MF Format** (recommended): Use with Elegoo Slicer for preserved scale, units, and metadata
+- **STL Format**: Universal compatibility with any slicer software
+
+See [schematic/README.md](schematic/README.md) for complete list of available components.
+
+---
+
 ## 3D Printing Configuration
 
 ### Equipment
@@ -167,6 +183,8 @@ Supports: Auto (>50° threshold)
 
 ### Chassis and Body Parts
 
+**Files**: `body.stl` / `body.3mf`
+
 **Priority**: Strength and durability
 
 ```
@@ -191,6 +209,8 @@ Supports: Yes (manual placement recommended)
 
 ### Wheel Hubs and Drive Components
 
+**Files**: `drive_shaft.stl` / `drive_shaft.3mf`
+
 **Priority**: Maximum strength and precision
 
 ```
@@ -200,6 +220,8 @@ Top/Bottom Layers: 5
 Layer Height: 0.12mm (fine detail)
 Supports: Minimal (design for printability)
 ```
+
+**Note**: Drive shafts must be printed at 100% infill to withstand motor torque and prevent mechanical failure during operation.
 
 ### Electronic Enclosures
 
@@ -303,14 +325,16 @@ ABS settings for final production builds will be documented here once prototypin
 
 ## Print Time Estimates
 
-| Component Type | Estimated Print Time | Material Usage |
-|----------------|---------------------|----------------|
-| Main Chassis | 8-12 hours | 200-300g |
-| Motor Mounts (pair) | 2-4 hours | 40-60g |
-| Wheel Hubs (pair) | 1-2 hours | 20-30g |
-| Electronic Enclosures | 3-6 hours | 80-120g |
+| Component | STL File | Estimated Print Time | Material Usage |
+|-----------|----------|---------------------|----------------|
+| Main Chassis | `body.stl` / `body.3mf` | 8-12 hours | 200-300g |
+| Drive Shaft (pair) | `drive_shaft.stl` / `drive_shaft.3mf` | 1-2 hours | 20-30g |
+| Motor Mounts (pair) | (Future release) | 2-4 hours | 40-60g |
+| Electronic Enclosures | (Future release) | 3-6 hours | 80-120g |
 
 **Total Estimated Material**: 350-530g PETG for complete robot
+
+**Note**: Additional STL files for motor mounts, wheel hubs, and electronic enclosures will be added to `schematic/stl/` in future releases.
 
 ---
 

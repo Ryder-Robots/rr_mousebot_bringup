@@ -7,9 +7,26 @@ This directory contains FreeCAD (.FCStd) design files for all mechanical and ele
 ```
 schematic/
 ├── README.md           # This file
-├── stl/                # STL files for 3D printing (to be populated in future versions)
+├── stl/                # STL and 3MF files for 3D printing
+│   ├── body.stl        # Main chassis STL file
+│   ├── body.3mf        # Main chassis 3MF file (recommended)
+│   ├── drive_shaft.stl # Drive shaft STL file
+│   └── drive_shaft.3mf # Drive shaft 3MF file (recommended)
 └── *.FCStd             # FreeCAD design files
 ```
+
+## STL Files
+
+The `stl/` subdirectory contains 3D printable files exported from the FreeCAD designs. Files are provided in both STL and 3MF formats:
+
+- **3MF Format** (recommended): Preserves units, scale, and metadata. Use with Elegoo Slicer for best results.
+- **STL Format**: Universal format compatible with all slicers.
+
+**Available Components:**
+- `body.stl` / `body.3mf`: Main robot chassis (40% infill recommended)
+- `drive_shaft.stl` / `drive_shaft.3mf`: Motor drive shaft (100% infill required for strength)
+
+For detailed printing instructions, slicer settings, and post-processing guidance, see [CONSTRUCTION.md](../CONSTRUCTION.md).
 
 ## Component Design Files
 
