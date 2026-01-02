@@ -87,7 +87,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
-| 360° Omni-directional Triangulation Lidar Dev Kit (8m range) | WS-24659 | 1 | $94.10 | [Core Electronics](https://core-electronics.com.au/360-omni-directional-triangulation-lidar-dev-kit-8m-range.html) | LD14P Lidar with 0.1-8m range, 1.5% accuracy, 6Hz scan rate. Includes USB-to-UART adapter. For maze wall detection and SLAM |
+| URM09 Ultrasonic Sensor (Gravity I²C) | SEN0304 | 1 | $22.65 | [Core Electronics](https://core-electronics.com.au/urm09-ultrasonic-sensor-gravity-i-c.html) | DFRobot I²C ultrasonic distance sensor. 2-500cm range (configurable), 1cm resolution, 1% accuracy, 50Hz max frequency. 3.3-5.5V supply, 20mA operating current. Built-in temperature compensation. For maze wall detection and obstacle avoidance. Connects to Nano I/O Shield I²C panel |
 | Wheel Encoders for DFRobot 3PA and 4WD Rovers | SEN0038 | 2 | $10.15 | [Core Electronics](https://core-electronics.com.au/wheel-encoders-for-dfrobot-3pa-and-4wd-rovers.html) | 20 PPR optical encoders for odometry. Non-contact angular displacement sensing. Includes grating disks and mounting hardware |
 
 ### Motor Control
@@ -124,7 +124,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 ### BOM Notes
 
-- **Total Component Cost** (listed items only): ~$533 AUD (excludes battery charger and 3D printed parts)
+- **Total Component Cost** (listed items only): ~$461 AUD (excludes battery charger and 3D printed parts)
 
 - **Power System Summary**: 2S Li-ion configuration (2x 18650 cells in series)
   - Nominal voltage: 7.4V (fresh), ~5.5V (under load/partially discharged)
@@ -132,7 +132,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - Continuous discharge: 7A (3.5A per cell)
   - Peak discharge: 20A (10A per cell, 5 seconds)
   - **Buck Converter Configuration** (adjust using flathead screwdriver):
-    - Single converter: 5.5V → 5.0V rail for Raspberry Pi and Lidar (3.4A continuous load)
+    - Single converter: 5.5V → 5.0V rail for Raspberry Pi only (3.0A continuous load)
     - Arduino Nano 33 BLE Sense Rev2: Powered via USB from Raspberry Pi (included in Pi's power budget)
   - Motor power: Battery voltage (7.4V nominal, 5.5V under load) direct from battery through motor driver
 
@@ -146,33 +146,24 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - **5V Rail** (via Buck Converter):
     - Raspberry Pi 4: 3.0A (typical under load, includes USB power to Arduino Nano)
     - Arduino Nano 33 BLE Sense Rev2: 0.05A (powered via USB from Raspberry Pi, included in Pi's budget)
-    - Lidar LD14P: 0.3A (≤1.5W / 5V)
+    - URM09 Ultrasonic Sensor: 0.02A (20mA via I²C from Nano I/O Shield)
     - Wheel Encoders: 0.04A (2x 20mA)
     - Motor Driver Control: 0.01A (minimal)
-    - **Subtotal 5V Rail**: 3.4A (buck converter rated 5A, 68% utilization)
+    - **Subtotal 5V Rail**: 3.0A (buck converter rated 5A, 60% utilization)
   - **Direct Battery (5.5V-7.4V)**:
     - TT Motors: 0.3A total (2x 150mA continuous)
     - **Subtotal Direct**: 0.3A
-  - **System Total**: ~3.7A from battery (7A continuous capacity, 53% utilization)
-  - **Runtime Estimate (Full System Active)**: 7000mAh / 3700mA ≈ 1.9 hours continuous operation
+  - **System Total**: ~3.3A from battery (7A continuous capacity, 47% utilization)
+  - **Runtime Estimate (Full System Active)**: 7000mAh / 3300mA ≈ 2.1 hours continuous operation
 
 - **Operational Mode Battery Life Analysis**:
-  - **Explore Mode** (LIDAR active, mapping maze):
-    - Current draw: 3.7A (all systems active including LIDAR)
-    - Runtime: 7000mAh / 3700mA ≈ **1.9 hours** (114 minutes)
-    - Typical explore phase: 10-15 minutes to map 16x16 grid
-    - Battery consumption per explore: ~7-10% (500-600mAh)
-  - **Run Mode** (LIDAR disabled via lifecycle, executing optimal path):
-    - Current draw: 3.4A (LIDAR inactive, motors at full speed)
-    - Runtime: 7000mAh / 3400mA ≈ **2.1 hours** (124 minutes)
-    - Typical run duration: 30-60 seconds from start to center
-    - Battery consumption per run: ~0.3-0.6% (20-40mAh)
-    - Estimated runs per battery: 150-175 runs (after initial explore phase)
+  - **Full System Runtime**:
+    - Current draw: 3.3A (all systems active)
+    - Runtime: 7000mAh / 3300mA ≈ **2.1 hours** (127 minutes) continuous operation
   - **Competition Scenario** (10-minute time limit):
-    - Explore phase: ~10 minutes @ 3.7A = 617mAh (8.8% battery)
-    - Multiple runs: ~5-10 runs @ 3.4A = 50-100mAh (0.7-1.4% battery each)
-    - Total competition draw: ~700-1200mAh (10-17% battery capacity)
-    - **Sufficient for 5-7 full competition attempts** per charge
+    - Typical maze solving: 10-15 minutes @ 3.3A = 550-825mAh (8-12% battery)
+    - **Result**: 8-12 full maze solving attempts per full battery charge
+    - Ultrasonic sensor provides reliable short-to-medium range wall detection (2-500cm) with low power consumption (20mA)
 
 - **Motor System Summary**: 2x TT motors for differential drive
   - Operating voltage: 7.4V nominal (5.5V under load conditions)

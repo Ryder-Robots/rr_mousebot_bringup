@@ -294,6 +294,34 @@ After support removal and sanding are complete, all printed components should be
 
 ---
 
+## Electronic Assembly
+
+### URM09 Ultrasonic Sensor Connection
+
+The URM09 Ultrasonic Sensor connects to the Arduino Nano 33 BLE Sense Rev2 via the Nano I/O Shield's I²C panel.
+
+**Connection Instructions**:
+
+1. **Locate I²C Panel**: Find the I²C connector panel on the Nano I/O Shield (DFR0012)
+2. **Connect Jumper Wires**: The URM09 includes jumper wires with the following color coding:
+   - **Black**: GND (Ground)
+   - **Red**: VCC (Power, 3.3-5.5V)
+   - **Blue**: SCL (I²C Clock)
+   - **Green**: SDA (I²C Data)
+
+   Connect each wire to the corresponding pin on the Nano I/O Shield's I²C panel
+3. **Power**: Sensor draws 20mA from the I²C connection
+4. **I²C Address**: Default address is 0x11 (configurable via software if needed)
+
+**Mounting Notes**:
+- Mount sensor facing forward (same direction as Arduino Nano mini USB port)
+- Ensure clear line of sight for ultrasonic waves (no obstructions within 2-500cm range)
+- Sensor provides 1cm resolution with 1% accuracy for maze wall detection
+
+For I²C communication protocol and Arduino firmware integration, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
+
+---
+
 ## Material Storage
 
 **PETG Storage Recommendations**:
