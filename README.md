@@ -87,6 +87,12 @@ The system employs ROS 2 lifecycle nodes to manage operational modes and optimiz
 - **Competition Ready**: Single battery supports 5-7 full competition attempts (explore + multiple runs) within 10-minute time limit
 - **Resource Management**: Systematic activation/deactivation of sensor nodes based on operational requirements
 
+## Battery Testing
+
+Battery test results show the batteries are rated at 3.8V on charge, drawing approximately 3A during operation.
+
+![Battery Test](images/batt_test01.jpg)
+
 ## Schematic Directory
 
 The [schematic/](schematic/) directory contains FreeCAD design files (.FCStd) for all mechanical and electrical components of the micromouse robot. These 3D CAD models are used for prototyping, assembly planning, and dimensional verification to ensure compliance with IEEE Micromouse specifications.
