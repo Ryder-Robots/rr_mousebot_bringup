@@ -87,7 +87,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
-| URM09 Ultrasonic Sensor (Gravity I²C) | SEN0304 | 3 | $22.65 | [Core Electronics](https://core-electronics.com.au/urm09-ultrasonic-sensor-gravity-i-c.html) | DFRobot I²C ultrasonic distance sensor. 2-500cm range (configurable), 1cm resolution, 1% accuracy, 50Hz max frequency. 3.3-5.5V supply, 20mA operating current. Built-in temperature compensation. For maze wall detection and obstacle avoidance. Connects to Nano I/O Shield I²C panel |
+| 360° Omni-directional Triangulation Lidar Dev Kit (8m range) | WS-24659 | 1 | $94.10 | [Core Electronics](https://core-electronics.com.au/360-omni-directional-triangulation-lidar-dev-kit-8m-range.html) | D200 Developer Kit with LD14P Lidar. 8m range, ±1.5% accuracy, 360° scanning, 4000Hz ranging frequency, UART @ 230400 baud. 5V DC, ≤300mA operating current. Includes UART to USB adapter. For SLAM, mapping, and obstacle detection |
 | Wheel Encoders for DFRobot 3PA and 4WD Rovers | SEN0038 | 2 | $10.15 | [Core Electronics](https://core-electronics.com.au/wheel-encoders-for-dfrobot-3pa-and-4wd-rovers.html) | 20 PPR optical encoders for odometry. Non-contact angular displacement sensing. Includes grating disks and mounting hardware |
 
 ### Motor Control
@@ -109,7 +109,8 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
-| Wheel - 65mm (Rubber Tire, Pair) | ROB-13259 | 1 | $9.55 | [Core Electronics](https://core-electronics.com.au/wheel-65mm-rubber-tire-pair.html) | Sparkfun basic wheels with black rubber tires. 65mm diameter, sold as pair (2 wheels). Compatible with DAGU right angle gear motors. For main drive wheels on differential drive robot |
+| Mecanum Wheel Left (80mm) | FIT0653 | 1 | $9.25 | [Core Electronics](https://core-electronics.com.au/mecanum-wheel-left-80mm.html) | Left-hand omnidirectional mecanum wheel. 80mm diameter, 37.5mm thickness, 9 rollers at 45°, 7x7x7mm hex shaft. 10kg load capacity. Silicone rubber coated rollers. **PLACEMENT: Install on LEFT side when Arduino Nano 33 BLE Sense Rev2 mini USB port faces FORWARD** |
+| Mecanum Wheel Right (80mm) | FIT0654 | 1 | $9.25 | [Core Electronics](https://core-electronics.com.au/mecanum-wheel-right-80mm.html) | Right-hand omnidirectional mecanum wheel. 80mm diameter, 37.5mm thickness, 9 rollers at 45°, 7x7x7mm hex shaft. 10kg load capacity. Silicone rubber coated rollers. **PLACEMENT: Install on RIGHT side when Arduino Nano 33 BLE Sense Rev2 mini USB port faces FORWARD** |
 | Supporting Swivel Caster Wheel - 1.3" Diameter | ADA2942 | 1 | $5.75 | [Core Electronics](https://core-electronics.com.au/supporting-swivel-caster-wheel-1-3-diameter.html) | 360° rotating support wheel. 32.4mm diameter, 42mm total height. Provides third-point stability for robot |
 | Brass Heat-Set Inserts for Plastic - M3 x 3mm - 50 pack | ADA4256 | 1 | $11.65 | [Core Electronics](https://core-electronics.com.au/brass-heat-set-inserts-for-plastic-m3-x-3mm-50-pack.html) | M3 threaded brass inserts for 3D printed parts. 4.5mm OD, 3mm length. Heat-press installation with soldering iron. Provides strong, reusable threaded mounting points in plastic chassis |
 | Makerverse M3 Mounting Kit | CE08342 | 1 | $3.25 | [Core Electronics](https://core-electronics.com.au/makerverse-m3-mounting-kit.html) | Hardware kit with 4x M3x12mm standoffs and 8x 6mm screws. For mounting electronics to chassis (up to 3mm material thickness) |
@@ -123,7 +124,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 ### BOM Notes
 
-- **Total Component Cost** (listed items only): ~$506 AUD (excludes battery charger and 3D printed parts)
+- **Total Component Cost** (listed items only): ~$485 AUD (excludes battery charger and 3D printed parts)
 
 - **Power System Summary**: 2S Li-ion configuration (2x 18650 cells in series)
   - Nominal voltage: 7.4V (fresh), ~5.5V (under load/partially discharged)
@@ -145,24 +146,25 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - **5V Rail** (via Buck Converter):
     - Raspberry Pi 4: 3.0A (typical under load, includes USB power to Arduino Nano)
     - Arduino Nano 33 BLE Sense Rev2: 0.05A (powered via USB from Raspberry Pi, included in Pi's budget)
-    - URM09 Ultrasonic Sensors: 0.06A (3x 20mA via I²C from Nano I/O Shield)
+    - LD14P Lidar: 0.3A (300mA operating current)
     - Wheel Encoders: 0.04A (2x 20mA)
     - Motor Driver Control: 0.01A (minimal)
-    - **Subtotal 5V Rail**: 3.08A (buck converter rated 5A, 62% utilization)
+    - **Subtotal 5V Rail**: 3.4A (buck converter rated 5A, 68% utilization)
   - **Direct Battery (5.5V-7.4V)**:
     - TT Motors: 0.3A total (2x 150mA continuous)
     - **Subtotal Direct**: 0.3A
-  - **System Total**: ~3.38A from battery (7A continuous capacity, 48% utilization)
-  - **Runtime Estimate (Full System Active)**: 7000mAh / 3380mA ≈ 2.1 hours continuous operation
+  - **System Total**: ~3.7A from battery (7A continuous capacity, 53% utilization)
+  - **Runtime Estimate (Full System Active)**: 7000mAh / 3700mA ≈ 1.9 hours continuous operation
 
 - **Operational Mode Battery Life Analysis**:
   - **Full System Runtime**:
-    - Current draw: 3.38A (all systems active)
-    - Runtime: 7000mAh / 3380mA ≈ **2.1 hours** (127 minutes) continuous operation
+    - Current draw: 3.7A (all systems active including LIDAR)
+    - Runtime: 7000mAh / 3700mA ≈ **1.9 hours** (114 minutes) continuous operation
   - **Competition Scenario** (10-minute time limit):
-    - Typical maze solving: 10-15 minutes @ 3.38A = 563-845mAh (8-12% battery)
-    - **Result**: 8-12 full maze solving attempts per full battery charge
-    - Three ultrasonic sensors provide comprehensive wall detection (front, left, right) with 2-500cm range and low combined power consumption (60mA total)
+    - Exploration phase: 10-15 minutes @ 3.7A = 617-925mAh (9-13% battery)
+    - Speed runs with LIDAR inactive: @ 3.4A, minimal battery usage per run
+    - **Result**: 5-7 full competition attempts (explore + multiple runs) per full battery charge
+    - 360° LIDAR provides comprehensive SLAM and mapping with 8m range and ±1.5% accuracy
 
 - **Motor System Summary**: 2x TT motors for differential drive
   - Operating voltage: 7.4V nominal (5.5V under load conditions)
@@ -171,6 +173,13 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - Motor driver provides 1.6A continuous capacity (>5x safety margin)
 
 - **Assembly Notes**:
+  - **Mecanum Wheel Placement (CRITICAL)**:
+    - Robot orientation reference: Arduino Nano 33 BLE Sense Rev2 **mini USB port faces FORWARD**
+    - **Left Wheel (FIT0653)**: Install on LEFT side of robot when facing forward direction
+    - **Right Wheel (FIT0654)**: Install on RIGHT side of robot when facing forward direction
+    - Incorrect wheel placement will result in improper omnidirectional movement
+    - Mecanum wheels enable movement in any direction: forward, backward, lateral (strafing), diagonal, and zero-radius rotation
+    - 7x7x7mm hex shaft coupling requires compatible motor shaft adapters
   - Buck converter requires tuning with flathead screwdriver to achieve precise 5.0V output
   - Use multimeter to verify output voltage before connecting to Raspberry Pi
   - Arduino Nano 33 BLE Sense Rev2 powered via USB connection from Raspberry Pi (no separate power rail needed)
@@ -191,13 +200,13 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 - **Raspberry Pi 4 8GB**: Provides adequate computational power for ROS 2 nodes, SLAM algorithms, and path planning. 8GB RAM ensures headroom for development and debugging. 3A typical current draw fits within 5A buck converter capacity
 - **Arduino Nano 33 BLE Sense Rev2**: Powerful nRF52840 microcontroller (64MHz, 1MB Flash) handles real-time motor control and sensor interfacing. Integrated 9-axis IMU, environmental sensors, and Bluetooth 5 provide extensive sensing capabilities beyond basic motor control. Low power consumption (50mA typical) and 3.3V I/O compatible with modern sensors
-- **Lidar Sensor**: 8m range exceeds maze dimensions (~2.5m), 1.5% accuracy suitable for 18cm grid navigation, UART interface compatible with both Raspberry Pi and Arduino
+- **360° LIDAR (LD14P)**: 8m range exceeds maze dimensions (~2.5m), ±1.5% accuracy suitable for 18cm grid navigation. 360° scanning at 4000Hz ranging frequency enables comprehensive SLAM and obstacle detection. UART interface @ 230400 baud compatible with both Raspberry Pi and Arduino. Low power consumption (≤300mA) with lifecycle management support. Includes D200 developer kit with UART to USB adapter
 - **Wheel Encoders**: 20 PPR resolution provides ~1.8° angular resolution for odometry and closed-loop speed control
 - **TT Motors**: Compact form factor (70x22x18mm) fits within micromouse footprint constraints. 1:48 gear ratio provides good balance between speed (~200 RPM) and torque (0.8kg.cm stall) for maze navigation. Low current draw (150mA continuous) ensures efficient battery usage. Pre-attached 200mm leads simplify wiring
 - **Motor Driver**: 1.6A continuous current rating provides >5x safety margin over motor requirements (300mA total). Dual H-bridge enables independent bidirectional control for differential drive. Built-in 5V regulator, thermal protection, and compact form factor (35x30mm) with M3 mounting holes
 - **Battery System**: Samsung 18650 cells chosen for high energy density (3500mAh), reliable performance, and proven track record. 2S configuration (7.4V nominal) provides appropriate voltage for motor driver input (3-16V range) and buck converter regulation. 51.8Wh total capacity supports ~1.9 hours continuous operation
-- **Buck Converter**: Single XL4015 module provides reliable 5V regulation with 5A capacity exceeding system requirements (3.4A total load including Raspberry Pi, Lidar, encoders, and Arduino Nano via USB). Adjustable output voltage via 30-turn potentiometer enables precise 5.0V tuning with flathead screwdriver. Wide input range (4-38V) accommodates battery voltage variation during discharge. Arduino Nano powered via USB from Raspberry Pi eliminates need for separate 3.3V rail
-- **Rubber Tire Wheels**: 65mm diameter wheels with rubber tires provide good traction for differential drive robot. Sold as pair (2 wheels), compatible with DAGU right angle gear motors and suitable for TT motor mounting. Compact diameter fits within micromouse footprint constraints while providing adequate ground clearance
+- **Buck Converter**: Single XL4015 module provides reliable 5V regulation with 5A capacity exceeding system requirements (3.7A total load including Raspberry Pi, LIDAR, encoders, and Arduino Nano via USB). Adjustable output voltage via 30-turn potentiometer enables precise 5.0V tuning with flathead screwdriver. Wide input range (4-38V) accommodates battery voltage variation during discharge. Arduino Nano powered via USB from Raspberry Pi eliminates need for separate 3.3V rail
+- **Mecanum Wheels**: 80mm diameter omnidirectional wheels enable advanced mobility including lateral (strafing) movement, diagonal motion, and zero-radius rotation. Essential for tight maze navigation and positioning. 45° roller angle with 9 silicone-coated rollers per wheel provides smooth omnidirectional movement. 10kg load capacity per wheel exceeds robot weight requirements. 7x7x7mm hex shaft compatible with TT motor shaft adapters. Must be installed as matched left/right pair with correct orientation (Arduino mini USB port = forward reference)
 - **Prototyping Board**: Ultra Mini Experimenters Board provides compact (65x45mm) power distribution platform for connecting buck converter outputs to system components. Vero-style board with 640 holes enables flexible wiring layout
 - **Heat-Set Inserts**: Brass M3 inserts provide strong, reusable threaded mounting points in 3D printed chassis. Superior to directly threading into plastic, allowing repeated assembly/disassembly without thread degradation. 50-pack provides sufficient quantity for entire robot assembly
 - **Caster Wheel**: Small form factor (32.4mm) provides additional support point for stability during omnidirectional maneuvers

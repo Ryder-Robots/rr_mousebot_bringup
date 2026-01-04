@@ -62,28 +62,28 @@ The system employs ROS 2 lifecycle nodes to manage operational modes and optimiz
 
 ### Operational Phases
 
-1. **Explore Mode** (Range Sensor Active)
-   - System maps the 16x16 maze grid using range sensors
+1. **Explore Mode** (LIDAR Active)
+   - System maps the 16x16 maze grid using 360° LIDAR
    - All sensors active for SLAM and navigation
    - Typical duration: 10-15 minutes
    - Power consumption: 3.7A (battery usage ~7-10%)
    - Returns to home position after complete exploration
 
-2. **Planning Phase** (Range Sensor Inactive)
-   - Range sensor lifecycle transitioned to INACTIVE state to conserve power
+2. **Planning Phase** (LIDAR Inactive)
+   - LIDAR lifecycle transitioned to INACTIVE state to conserve power
    - Computes optimal path to center using A* or similar algorithm
    - Minimal power consumption during computation
 
-3. **Run Mode** (Range Sensor Inactive)
+3. **Run Mode** (LIDAR Inactive)
    - Executes pre-computed optimal path at maximum speed
-   - Range sensor remains INACTIVE via lifecycle management
+   - LIDAR remains INACTIVE via lifecycle management
    - Power consumption: 3.4A (300mA savings per run)
    - Typical run duration: 30-60 seconds
    - Battery usage per run: ~0.3-0.6%
 
 ### Lifecycle Benefits
 
-- **Power Efficiency**: Disabling range sensor during runs saves ~300mA, enabling 150-175 runs per battery charge after initial exploration
+- **Power Efficiency**: Disabling LIDAR during runs saves ~300mA, enabling 150-175 runs per battery charge after initial exploration
 - **Competition Ready**: Single battery supports 5-7 full competition attempts (explore + multiple runs) within 10-minute time limit
 - **Resource Management**: Systematic activation/deactivation of sensor nodes based on operational requirements
 
