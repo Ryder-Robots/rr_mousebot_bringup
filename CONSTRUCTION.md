@@ -302,23 +302,89 @@ The URM09 Ultrasonic Sensor connects to the Arduino Nano 33 BLE Sense Rev2 via t
 
 **Connection Instructions**:
 
-1. **Locate I²C Panel**: Find the I²C connector panel on the Nano I/O Shield (DFR0012)
-2. **Connect Jumper Wires**: The URM09 includes jumper wires with the following color coding:
-   - **Black**: GND (Ground)
-   - **Red**: VCC (Power, 3.3-5.5V)
-   - **Blue**: SCL (I²C Clock)
-   - **Green**: SDA (I²C Data)
 
-   Connect each wire to the corresponding pin on the Nano I/O Shield's I²C panel
-3. **Power**: Sensor draws 20mA from the I²C connection
-4. **I²C Address**: Default address is 0x11 (configurable via software if needed)
+### Motor Driver Wiring
 
-**Mounting Notes**:
-- Mount sensor facing forward (same direction as Arduino Nano mini USB port)
-- Ensure clear line of sight for ultrasonic waves (no obstructions within 2-500cm range)
-- Sensor provides 1cm resolution with 1% accuracy for maze wall detection
+The Makerverse Motor Driver 2 Channel (CE08038) connects to the Arduino Nano 33 BLE Sense Rev2 for motor control and to the TT motors for drive output.
 
-For I²C communication protocol and Arduino firmware integration, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
+**Arduino Pinout Reference**: [Arduino Nano 33 BLE Sense Rev2 Pinout](https://docs.arduino.cc/resources/pinouts/ABX00031-full-pinout.pdf)
+
+#### Motor Driver to Arduino Connections
+
+| Motor Driver Pin | Arduino Pin | Wire Color | Signal Type | Description |
+|------------------|-------------|------------|-------------|-------------|
+| DIR-A | D2 | White | Digital Output | Motor A direction control |
+| DIR-B | D4 | White | Digital Output | Motor B direction control |
+| PWM-A | D3 | Yellow | PWM Output | Motor A speed control |
+| PWM-B | D5 | Yellow | PWM Output | Motor B speed control |
+
+**Connection Notes**:
+- DIR pins control motor rotation direction (HIGH/LOW)
+- PWM pins control motor speed (0-255 duty cycle)
+- All control signals are 3.3V logic compatible with Arduino Nano 33 BLE Sense Rev2
+
+#### Motor Driver to TT Motor Connections
+
+**Motor A (Left Motor)**:
+
+| Motor Driver Terminal | TT Motor Wire | Wire Color | Description |
+|----------------------|---------------|------------|-------------|
+| A+ | Motor positive | Green | Positive terminal |
+| A- | Motor negative | White | Negative terminal |
+
+**Motor B (Right Motor)**:
+
+| Motor Driver Terminal | TT Motor Wire | Wire Color | Description |
+|----------------------|---------------|------------|-------------|
+| B+ | Motor positive | Green | Positive terminal |
+| B- | Motor negative | White | Negative terminal |
+
+#### Motor Rotation Direction
+
+**Motor A Clockwise Rotation**:
+- Condition: Green wire (A+) is positive, White wire (A-) is negative, DIR-A is HIGH
+- Result: Motor shaft rotates clockwise when viewed from the shaft end
+- Use case: Forward motion for left wheel
+
+**Motor A Counter-Clockwise Rotation**:
+- Condition: DIR-A is LOW (polarity reversal via H-bridge)
+- Result: Motor shaft rotates counter-clockwise
+- Use case: Reverse motion for left wheel
+
+**Motor B Clockwise Rotation**:
+- Condition: Green wire (B+) is positive, White wire (B-) is negative, DIR-B is HIGH
+- Result: Motor shaft rotates clockwise when viewed from the shaft end
+- Use case: Forward motion for right wheel
+
+**Motor B Counter-Clockwise Rotation**:
+- Condition: DIR-B is LOW (polarity reversal via H-bridge)
+- Result: Motor shaft rotates counter-clockwise
+- Use case: Reverse motion for right wheel
+
+#### Wiring Best Practices
+
+1. **Color Coding Consistency**:
+   - Use white wires for all DIR (direction) signals
+   - Use yellow wires for all PWM (speed) signals
+   - Use green wires for all motor positive terminals
+   - Use white wires for all motor negative terminals
+
+2. **Wire Management**:
+   - Secure wires with cable ties to prevent interference with moving parts
+   - Keep motor driver wires away from encoder signal wires to minimize electrical noise
+   - Route power wires separately from signal wires
+
+3. **Testing Sequence**:
+   - Test each motor individually before full assembly
+   - Verify rotation direction matches expected behavior
+   - Confirm PWM speed control operates smoothly across 0-255 range
+
+4. **Safety**:
+   - Double-check polarity before applying power
+   - Ensure motor driver heat sink has adequate clearance for cooling
+   - Monitor motor driver temperature during initial testing
+
+For motor control firmware implementation, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
 
 ---
 
