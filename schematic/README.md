@@ -172,6 +172,14 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - Motor driver provides 1.6A continuous capacity (>5x safety margin)
 
 - **Assembly Notes**:
+  - **Nano I/O Shield (DFR0012) Configuration (CRITICAL)**:
+    - **Nano Switch Setting**: Set the shield's Nano switch to **V4** position for Arduino Nano 33 BLE Sense Rev2 compatibility
+      - This routes I²C signals (A4/SDA, A5/SCL) correctly to the Rev2's integrated I²C pins
+      - Incorrect switch position will cause I²C communication failures with sensors
+    - **GND Jumper Cap Configuration**: Move the GND jumper cap **away** from the Servo power selection port (default USB position) when supplying external 5V to the shield while using USB on the Nano for communication
+      - **Jumper Logic**: This isolates servo/peripheral power from the Nano's USB supply, preventing back-feeding that could damage the microcontroller
+      - External 5V powers shield loads directly via the servo terminals while USB provides separate communication and Nano power
+      - **IMPORTANT**: Failure to move the jumper cap when using external power can result in voltage back-feeding and permanent damage to the Arduino Nano 33 BLE Sense Rev2
   - Buck converter requires tuning with flathead screwdriver to achieve precise 5.0V output
   - Use multimeter to verify output voltage before connecting to Raspberry Pi
   - Arduino Nano 33 BLE Sense Rev2 powered via USB connection from Raspberry Pi (no separate power rail needed)

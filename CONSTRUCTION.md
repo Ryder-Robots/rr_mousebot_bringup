@@ -296,12 +296,88 @@ After support removal and sanding are complete, all printed components should be
 
 ## Electronic Assembly
 
+### Nano I/O Shield (DFR0012) Configuration
+
+The Nano I/O Shield provides convenient connectivity for the Arduino Nano 33 BLE Sense Rev2, but requires specific configuration to prevent damage and ensure proper operation.
+
+#### **CRITICAL: Nano Switch Setting**
+
+Set the shield's Nano switch to **V4** position for Arduino Nano 33 BLE Sense Rev2 compatibility.
+
+- **Purpose**: Routes I²C signals (A4/SDA, A5/SCL) correctly to the Rev2's integrated I²C pins
+- **Consequence of incorrect setting**: I²C communication failures with all connected sensors (LIDAR, encoders, etc.)
+
+#### **CRITICAL: GND Jumper Cap Removal**
+
+**⚠️ WARNING: FAILURE TO REMOVE THE JUMPER CAP CAN PERMANENTLY DAMAGE THE ARDUINO NANO 33 BLE SENSE REV2 ⚠️**
+
+When using external 5V power to the shield (from buck converter) while the Arduino Nano is powered via USB from the Raspberry Pi, you **MUST** remove the GND jumper cap from the Servo power selection port.
+
+**Jumper Cap Configuration**:
+1. **Default Position**: The jumper cap is installed on the Servo power selection port connecting to USB (ships from factory in this position)
+2. **Required Action**: **REMOVE** the jumper cap entirely or move it to a safe position away from the Servo power selection port
+3. **Do NOT**: Leave the jumper cap connecting USB power to external servo power rail
+
+**Why This Matters (Jumper Logic)**:
+- The jumper cap in default position connects the Nano's USB 5V supply to the shield's servo/peripheral power rail
+- When external 5V (from buck converter) is supplied to the shield's servo terminals, the jumper creates a parallel connection between two power sources
+- This causes **voltage back-feeding** from the external regulator into the Arduino Nano's USB power circuit
+- Back-feeding can exceed the USB power circuit's safe operating limits, resulting in permanent component damage
+- **Removing the jumper isolates** the two power domains:
+  - Arduino Nano powered via USB from Raspberry Pi (communication + microcontroller power)
+  - Shield peripherals (servos, sensors) powered via external 5V from buck converter
+
+**Power Configuration Summary**:
+- **Arduino Nano 33 BLE Sense Rev2**: Powered via USB from Raspberry Pi (5V @ ~50mA)
+- **Nano I/O Shield peripherals**: Powered via external 5V from buck converter connected to servo terminal blocks
+- **Jumper Cap**: **REMOVED** to isolate the two power domains
+
+### Power Distribution: Buck Converter to Nano I/O Shield
+
+The buck converter provides 5V power to the Nano I/O Shield's servo/peripheral terminals for sensors and other connected devices.
+
+**Wiring Instructions**:
+
+| Buck Converter Terminal | Nano I/O Shield Terminal | Wire Gauge | Description |
+|------------------------|--------------------------|------------|-------------|
+| 5V Output (Positive) | Servo Terminal VCC/+ | 22-20 AWG | Regulated 5V power for peripherals |
+| GND (Negative) | Servo Terminal GND/- | 22-20 AWG | Common ground return |
+
+**Connection Notes**:
+1. Use the servo terminal blocks on the Nano I/O Shield (typically labeled S1, S2, etc.)
+2. Connect buck converter 5V output to the **VCC/+** pin of any servo terminal
+3. Connect buck converter GND to the **GND/-** pin of the same servo terminal
+4. All servo terminal power pins are internally connected, so connection to any terminal block is acceptable
+5. Verify 5.0V output with multimeter before connecting to shield
+6. **Ensure jumper cap is removed** as described above before applying external power
+
+**Current Budget**:
+- Total load on shield 5V rail: Sensors, encoders, and peripherals (see BOM for detailed current analysis)
+- Buck converter capacity: 5A continuous (adequate margin for all shield loads)
+
 ### URM09 Ultrasonic Sensor Connection
 
 The URM09 Ultrasonic Sensor connects to the Arduino Nano 33 BLE Sense Rev2 via the Nano I/O Shield's I²C panel.
 
 **Connection Instructions**:
 
+1. **Locate I²C Panel**: Find the I²C connector panel on the Nano I/O Shield (DFR0012)
+2. **Connect Jumper Wires**: The URM09 includes jumper wires with the following color coding:
+   - **Black**: GND (Ground)
+   - **Red**: VCC (Power, 3.3-5.5V)
+   - **Blue**: SCL (I²C Clock)
+   - **Green**: SDA (I²C Data)
+
+   Connect each wire to the corresponding pin on the Nano I/O Shield's I²C panel
+3. **Power**: Sensor draws 20mA from the I²C connection (powered by shield's external 5V supply)
+4. **I²C Address**: Default address is 0x11 (configurable via software if needed)
+
+**Mounting Notes**:
+- Mount sensor facing forward (same direction as Arduino Nano mini USB port)
+- Ensure clear line of sight for ultrasonic waves (no obstructions within 2-500cm range)
+- Sensor provides 1cm resolution with 1% accuracy for maze wall detection
+
+For I²C communication protocol and Arduino firmware integration, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
 
 ### Motor Driver Wiring
 
