@@ -80,6 +80,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
 | Raspberry Pi 4 Model B 8GB | CE06974 | 1 | $145.00 | [Core Electronics](https://core-electronics.com.au/raspberry-pi-4-model-b-8gb.html) | Main compute platform for ROS 2 and navigation algorithms. 1.5GHz quad-core ARM Cortex-A72, Gigabit Ethernet, dual-band WiFi, Bluetooth 5.0. Typical current: ~3A at 5V |
+| IO Expansion HAT for Raspberry Pi 4B/3B+ | DFR0566 | 1 | $17.50 | [Core Electronics](https://core-electronics.com.au/io-expansion-hat-for-raspberry-pi-4b-3b.html) | DFRobot GPIO expansion HAT. Provides UART, I²C, SPI, PWM, and digital I/O breakout terminals. 65×56mm. D200 LIDAR connects to UART terminals (T/R/5V/GND). Compatible with Gravity Series sensors |
 | Arduino Nano 33 BLE Sense Rev2 | ABX00069 | 1 | $98.13 | [Core Electronics](https://core-electronics.com.au/arduino-nano-33-ble-sense-rev2.html) | nRF52840 microcontroller (64MHz, 1MB Flash, 256KB RAM). Includes 9-axis IMU, temp/humidity, pressure, proximity/gesture sensors, and digital mic. Bluetooth 5 via NINA B306. 3.3V I/O, ~50mA typical current. Handles real-time motor control and sensor interfacing |
 | Nano I/O Shield For Arduino Nano | DFR0012 | 1 | $12.95 | [Core Electronics](https://core-electronics.com.au/nano-i-o-shield-for-arduino-nano.html) | Expansion board with Gravity connectors for sensor/servo connections. Compatible with Arduino Nano 33 BLE Sense Rev2 |
 
@@ -123,7 +124,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 ### BOM Notes
 
-- **Total Component Cost** (listed items only): ~$476 AUD (excludes battery charger and 3D printed parts)
+- **Total Component Cost** (listed items only): ~$494 AUD (excludes battery charger and 3D printed parts)
 
 - **Power System Summary**: 2S Li-ion configuration (2x 18650 cells in series)
   - Nominal voltage: 7.4V (fresh), ~5.5V (under load/partially discharged)

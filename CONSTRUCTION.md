@@ -379,6 +379,103 @@ The URM09 Ultrasonic Sensor connects to the Arduino Nano 33 BLE Sense Rev2 via t
 
 For I²C communication protocol and Arduino firmware integration, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
 
+### D200 LIDAR Connection to Raspberry Pi
+
+The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) connects to the Raspberry Pi 4 Model B via UART for ROS 2 SLAM and mapping.
+
+**Note**: The D200 LIDAR requires a DFRobot GPIO Expansion HAT (DFR0566) or equivalent UART breakout board to interface with the Raspberry Pi. The DFR0566 provides convenient passthrough UART terminals that align perfectly with the Pi's GPIO UART polarity and the D200's standard 4-wire cable.
+
+#### Hardware Connection
+
+**D200 to Raspberry Pi 4B Wiring via DFR0566 UART Terminals**:
+
+| D200 Wire Color | Function | DFR0566 Terminal | Raspberry Pi 4B GPIO | Physical Pin | Description |
+|----------------|----------|------------------|---------------------|--------------|-------------|
+| Red | RX (Receive) | UART T | GPIO14 TXD | Pin 8 | D200 receives data from Pi |
+| Green | TX (Transmit) | UART R | GPIO15 RXD | Pin 10 | D200 transmits data to Pi |
+| White | GND (Ground) | GND | Ground | Pin 6, 9, or 14 | Common ground |
+| Black | VCC (Power) | 5V | 5V Power Rail | Pin 2 or 4 | 5V power supply |
+
+**Connection Explanation**:
+- The D200's standard 4-wire cable aligns perfectly with Pi UART polarity through DFR0566's passthrough UART terminals
+- **T terminal** (Transmit from Pi perspective) = Pi TX (GPIO14) → D200 RX (Red wire)
+- **R terminal** (Receive from Pi perspective) = Pi RX (GPIO15) → D200 TX (Green wire)
+- This configuration ensures proper bidirectional UART communication at 230400 baud
+
+#### Physical Assembly
+
+1. **Stack DFR0566 HAT on Raspberry Pi 4B**:
+   - Align the 40-pin GPIO header
+   - Press firmly to ensure full contact
+   - Secure with standoffs if provided
+
+2. **Connect D200 Cable to DFR0566 Terminals**:
+   - Connect D200 **Red wire** (RX) to DFR0566 **UART T** terminal
+   - Connect D200 **Green wire** (TX) to DFR0566 **UART R** terminal
+   - Connect D200 **White wire** (GND) to DFR0566 **GND** terminal
+   - Connect D200 **Black wire** (VCC) to DFR0566 **5V** terminal
+
+3. **Verify Connections**:
+   - Double-check wire colors match terminal assignments
+   - Ensure wires are securely fastened in screw terminals
+   - Confirm no loose connections that could cause intermittent operation
+
+#### Raspberry Pi UART Configuration
+
+The Raspberry Pi's hardware UART must be enabled and configured for the D200 LIDAR.
+
+**Enable UART via raspi-config**:
+
+1. Open terminal on Raspberry Pi
+2. Run configuration utility:
+   ```bash
+   sudo raspi-config
+   ```
+3. Navigate to: **Interface Options** → **Serial Port**
+4. Configure as follows:
+   - **"Would you like a login shell to be accessible over serial?"** → Select **NO**
+     - This disables the console login shell on the serial port
+   - **"Would you like the serial port hardware to be enabled?"** → Select **YES**
+     - This enables the UART hardware interface
+5. Exit raspi-config and reboot:
+   ```bash
+   sudo reboot
+   ```
+
+**Verification**:
+
+After reboot, verify UART is enabled:
+```bash
+ls -l /dev/serial0
+```
+
+Expected output should show `/dev/serial0` linked to `/dev/ttyAMA0` (hardware UART).
+
+#### ROS 2 Integration
+
+**UART Device Path**: `/dev/serial0`
+**Baud Rate**: 230400
+
+The `ldlidar_ros2` lifecycle node will automatically detect and configure the D200 LIDAR on `/dev/serial0` at 230400 baud for ROS 2 `/scan` topic publishing.
+
+**Node Configuration** (in launch file):
+```python
+'serial_port': '/dev/serial0',
+'serial_baudrate': 230400,
+'topic_name': 'scan',
+'lidar_frame': 'base_laser',
+'range_threshold': 0.005  # 5mm minimum range
+```
+
+**Setup Confirmation**:
+
+1. Hardware: DFR0566 stacked on Pi 4B, D200 cable connected to UART/5V/GND terminals exactly as specified
+2. Software: UART enabled via `raspi-config` (login shell disabled, hardware enabled)
+3. ROS 2: `ldlidar_ros2` lifecycle node configured for `/dev/serial0` at 230400 baud
+4. Result: Automatic `/scan` topic publishing for SLAM and navigation
+
+For ROS 2 LIDAR driver configuration and lifecycle management, see the main launch file in this repository.
+
 ### Motor Driver Wiring
 
 The Makerverse Motor Driver 2 Channel (CE08038) connects to the Arduino Nano 33 BLE Sense Rev2 for motor control and to the TT motors for drive output.
