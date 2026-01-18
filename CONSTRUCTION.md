@@ -400,6 +400,8 @@ The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) c
 | White | GND (Ground) | GND | Ground | Pin 6, 9, or 14 | Common ground |
 | Black | VCC (Power) | 5V | 5V Power Rail | Pin 2 or 4 | 5V power supply |
 
+**GPIO Pinout Reference**: [Raspberry Pi GPIO Documentation](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#gpio)
+
 **⚠️ CRITICAL**: Wire colors shown above are based on common D200 cable configurations. **Always verify wire functions using a multimeter or by consulting the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)** before making connections. The cable supplied with your device may use different colors.
 
 **Connection Explanation**:
@@ -438,6 +440,8 @@ If you choose not to use the DFR0566 HAT, you can connect the D200 LIDAR directl
 | Green | TX (Transmit) | GPIO15 RXD | Pin 10 | D200 transmits data to Pi |
 | White | GND (Ground) | Ground | Pin 6, 9, or 14 | Common ground |
 | Black | VCC (Power) | 5V Power Rail | Pin 2 or 4 | 5V power supply |
+
+**GPIO Pinout Reference**: [Raspberry Pi GPIO Documentation](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#gpio)
 
 **⚠️ CRITICAL**: Wire colors shown above are based on common D200 cable configurations. **Always verify wire functions using a multimeter or by consulting the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)** before making connections.
 
@@ -505,6 +509,46 @@ stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
 - Verify TX/RX connections are correct (Green to UART R, Red to UART T)
 - Confirm LIDAR is spinning (motor should be audible/visible)
 - Double-check wire functions against the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)
+
+#### UART Hardware Testing on Raspberry Pi 5 (Development Note)
+
+**Note**: When testing the D200 LIDAR hardware on Raspberry Pi 5 for development purposes, UART configuration can be difficult to troubleshoot. While GPIO headers remain the same as other Raspberry Pi models (see [Raspberry Pi GPIO Documentation](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#gpio)), it's recommended to verify UART functionality before connecting the LIDAR.
+
+**UART Loopback Test Procedure**:
+
+1. **Create Hardware Loopback**:
+   - Place a jumper wire between **Pin 8 (GPIO14 TXD)** and **Pin 10 (GPIO15 RXD)**
+   - This creates a loopback where transmitted data is immediately received back
+
+2. **Install minicom** (if not already installed):
+   ```bash
+   sudo apt-get install minicom
+   ```
+
+3. **Launch minicom**:
+   ```bash
+   minicom -b 115200 -D /dev/ttyAMA0
+   ```
+
+4. **Disable Echo**:
+   - Press `Ctrl+A` then `E` to toggle local echo OFF
+   - This prevents double-character display (local echo + loopback echo)
+
+5. **Test Serial Communication**:
+   - Type any random characters on the keyboard
+   - **Expected Result**: Characters should be echoed back in the terminal
+   - If characters appear, UART hardware is working correctly
+   - If no characters appear, UART may not be properly enabled or configured
+
+6. **Exit minicom**:
+   - Press `Ctrl+A` then `X` to exit
+   - Remove the jumper wire before connecting the D200 LIDAR
+
+**Troubleshooting**:
+- If loopback test fails, verify UART is enabled in `raspi-config` (Interface Options → Serial Port)
+- Check `/boot/firmware/config.txt` for `enable_uart=1`
+- Ensure no other service is using `/dev/ttyAMA0` (check with `sudo lsof | grep ttyAMA0`)
+- On Raspberry Pi 5, UART configuration may differ slightly from Pi 4 - consult official documentation if issues persist
 
 #### ROS 2 Integration
 

@@ -114,17 +114,10 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 | Supporting Swivel Caster Wheel - 1.3" Diameter | ADA2942 | 1 | $5.75 | [Core Electronics](https://core-electronics.com.au/supporting-swivel-caster-wheel-1-3-diameter.html) | 360° rotating support wheel. 32.4mm diameter, 42mm total height. Provides third-point stability for robot |
 | Brass Heat-Set Inserts for Plastic - M3 x 3mm - 50 pack | ADA4256 | 1 | $11.65 | [Core Electronics](https://core-electronics.com.au/brass-heat-set-inserts-for-plastic-m3-x-3mm-50-pack.html) | M3 threaded brass inserts for 3D printed parts. 4.5mm OD, 3mm length. Heat-press installation with soldering iron. Provides strong, reusable threaded mounting points in plastic chassis |
 | Makerverse M3 Mounting Kit | CE08342 | 1 | $3.25 | [Core Electronics](https://core-electronics.com.au/makerverse-m3-mounting-kit.html) | Hardware kit with 4x M3x12mm standoffs and 8x 6mm screws. For mounting electronics to chassis (up to 3mm material thickness) |
-| Ultra Mini Experimenters Board | HP9556 | 1 | $7.95 | [Jaycar](https://www.jaycar.com.au/ultra-mini-experimenters-board/p/HP9556) | Vero board 65x45mm with 640 holes (0.3mm, 2.54mm spacing). Supplied as pair (can be snapped apart). For power distribution and wiring connections between buck converters and system components |
-
-### Cables and Interconnects
-
-| Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
-|-----------|-----|----------|---------------------|----------|-------|
-| USB OTG Cable - Female A to Micro A - 4" | CAB-11604 | 2 | $7.65 | [Core Electronics](https://core-electronics.com.au/usb-otg-cable-female-a-to-micro-a-4.html) | USB On-The-Go cable for connecting peripherals. 4" length |
 
 ### BOM Notes
 
-- **Total Component Cost** (listed items only): ~$494 AUD (excludes battery charger and 3D printed parts)
+- **Total Component Cost** (listed items only): ~$478 AUD (excludes battery charger and 3D printed parts)
 
 - **Power System Summary**: 2S Li-ion configuration (2x 18650 cells in series)
   - Nominal voltage: 7.4V (fresh), ~5.5V (under load/partially discharged)
@@ -184,7 +177,6 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - Buck converter requires tuning with flathead screwdriver to achieve precise 5.0V output
   - Use multimeter to verify output voltage before connecting to Raspberry Pi
   - Arduino Nano 33 BLE Sense Rev2 powered via USB connection from Raspberry Pi (no separate power rail needed)
-  - Ultra Mini Experimenters Board (HP9556) provides power distribution bus for connecting buck converter output to system components
   - Brass heat-set inserts (ADA4256) provide threaded mounting points in 3D printed chassis for M3 screws
 
 - **Additional Components Required** (not listed above):
@@ -208,7 +200,6 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 - **Battery System**: Samsung 18650 cells chosen for high energy density (3500mAh), reliable performance, and proven track record. 2S configuration (7.4V nominal) provides appropriate voltage for motor driver input (3-16V range) and buck converter regulation. 51.8Wh total capacity supports ~1.9 hours continuous operation
 - **Buck Converter**: Single XL4015 module provides reliable 5V regulation with 5A capacity exceeding system requirements (3.7A total load including Raspberry Pi, LIDAR, encoders, and Arduino Nano via USB). Adjustable output voltage via 30-turn potentiometer enables precise 5.0V tuning with flathead screwdriver. Wide input range (4-38V) accommodates battery voltage variation during discharge. Arduino Nano powered via USB from Raspberry Pi eliminates need for separate 3.3V rail
 - **Rubber Tire Wheels**: 65mm diameter wheels with black rubber tires provide good traction for differential drive robot. Sold as pair (2 wheels), compatible with DAGU right angle gear motors and suitable for TT motor mounting. Compact diameter fits within micromouse footprint constraints while providing adequate ground clearance
-- **Prototyping Board**: Ultra Mini Experimenters Board provides compact (65x45mm) power distribution platform for connecting buck converter outputs to system components. Vero-style board with 640 holes enables flexible wiring layout
 - **Heat-Set Inserts**: Brass M3 inserts provide strong, reusable threaded mounting points in 3D printed chassis. Superior to directly threading into plastic, allowing repeated assembly/disassembly without thread degradation. 50-pack provides sufficient quantity for entire robot assembly
 - **Caster Wheel**: Small form factor (32.4mm) provides additional support point for stability during omnidirectional maneuvers
 - **Mounting Hardware**: M3 standoffs provide secure mounting for motor driver and other electronics while maintaining proper spacing from chassis
