@@ -383,9 +383,13 @@ For I²C communication protocol and Arduino firmware integration, see the [rr_bl
 
 The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) connects to the Raspberry Pi 4 Model B via UART for ROS 2 SLAM and mapping.
 
-**Note**: The D200 LIDAR requires a DFRobot GPIO Expansion HAT (DFR0566) or equivalent UART breakout board to interface with the Raspberry Pi. The DFR0566 provides convenient passthrough UART terminals that align perfectly with the Pi's GPIO UART polarity and the D200's standard 4-wire cable.
+**Important Notes**:
+- **DFR0566 GPIO Expansion HAT (Optional)**: The DFRobot GPIO Expansion HAT (DFR0566) provides convenient UART breakout terminals for connecting the D200 LIDAR. However, **the DFR0566 is optional** - the D200 can be connected directly to the Raspberry Pi GPIO pins. Both connection methods have been tested and verified to work. The DFR0566 simplifies wiring with screw terminals but direct GPIO connection is also fully supported.
+- **⚠️ WIRING CAVEAT**: The cable supplied with the D200 LIDAR **does not use standard wire colors**. Always verify wire functions against the official documentation: [LD14P Development Manual (PDF)](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf). Do not rely solely on wire colors - verify each wire's function before connecting.
 
 #### Hardware Connection
+
+**Connection Method 1: Using DFR0566 GPIO Expansion HAT (Recommended for Convenience)**
 
 **D200 to Raspberry Pi 4B Wiring via DFR0566 UART Terminals**:
 
@@ -395,6 +399,8 @@ The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) c
 | Green | TX (Transmit) | UART R | GPIO15 RXD | Pin 10 | D200 transmits data to Pi |
 | White | GND (Ground) | GND | Ground | Pin 6, 9, or 14 | Common ground |
 | Black | VCC (Power) | 5V | 5V Power Rail | Pin 2 or 4 | 5V power supply |
+
+**⚠️ CRITICAL**: Wire colors shown above are based on common D200 cable configurations. **Always verify wire functions using a multimeter or by consulting the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)** before making connections. The cable supplied with your device may use different colors.
 
 **Connection Explanation**:
 - The D200's standard 4-wire cable aligns perfectly with Pi UART polarity through DFR0566's passthrough UART terminals
@@ -419,6 +425,39 @@ The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) c
    - Double-check wire colors match terminal assignments
    - Ensure wires are securely fastened in screw terminals
    - Confirm no loose connections that could cause intermittent operation
+
+**Connection Method 2: Direct GPIO Connection (No DFR0566 Required)**
+
+If you choose not to use the DFR0566 HAT, you can connect the D200 LIDAR directly to the Raspberry Pi 4B GPIO header. **This method has been tested and verified to work.**
+
+**D200 to Raspberry Pi 4B Direct GPIO Wiring**:
+
+| D200 Wire Color | Function | Raspberry Pi 4B GPIO | Physical Pin | Description |
+|----------------|----------|---------------------|--------------|-------------|
+| Red | RX (Receive) | GPIO14 TXD | Pin 8 | D200 receives data from Pi |
+| Green | TX (Transmit) | GPIO15 RXD | Pin 10 | D200 transmits data to Pi |
+| White | GND (Ground) | Ground | Pin 6, 9, or 14 | Common ground |
+| Black | VCC (Power) | 5V Power Rail | Pin 2 or 4 | 5V power supply |
+
+**⚠️ CRITICAL**: Wire colors shown above are based on common D200 cable configurations. **Always verify wire functions using a multimeter or by consulting the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)** before making connections.
+
+**Direct Connection Assembly**:
+
+1. **Prepare GPIO Connections**:
+   - Use female Dupont jumper wires to connect D200 cable to Raspberry Pi GPIO pins
+   - Alternatively, solder wires directly to D200 cable and use female Dupont connectors for Pi GPIO
+
+2. **Make Connections**:
+   - Connect D200 **Red wire** (RX) to Pi **GPIO14 TXD** (Physical Pin 8)
+   - Connect D200 **Green wire** (TX) to Pi **GPIO15 RXD** (Physical Pin 10)
+   - Connect D200 **White wire** (GND) to Pi **Ground** (Physical Pin 6, 9, or 14)
+   - Connect D200 **Black wire** (VCC) to Pi **5V** (Physical Pin 2 or 4)
+
+3. **Verify Connections**:
+   - Double-check wire colors match GPIO pin assignments
+   - Ensure secure connections at GPIO header
+   - Confirm no loose connections that could cause intermittent operation
+   - **IMPORTANT**: Verify correct GPIO pins before applying power to prevent damage
 
 #### Raspberry Pi UART Configuration
 
@@ -450,6 +489,22 @@ ls -l /dev/serial0
 ```
 
 Expected output should show `/dev/serial0` linked to `/dev/ttyAMA0` (hardware UART).
+
+**Test LIDAR Wiring and Communication**:
+
+To verify the D200 LIDAR is properly connected and transmitting data:
+```bash
+stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
+```
+
+**Expected Result**: You should see binary data streaming from the LIDAR. The output will appear as scrambled characters (this is normal - it's raw LIDAR scan data). Press `Ctrl+C` to stop.
+
+**If no data appears**:
+- Verify power connection (Black wire to 5V)
+- Check ground connection (White wire to GND)
+- Verify TX/RX connections are correct (Green to UART R, Red to UART T)
+- Confirm LIDAR is spinning (motor should be audible/visible)
+- Double-check wire functions against the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)
 
 #### ROS 2 Integration
 
