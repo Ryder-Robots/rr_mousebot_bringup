@@ -575,6 +575,166 @@ The `ldlidar_ros2` lifecycle node will automatically detect and configure the D2
 
 For ROS 2 LIDAR driver configuration and lifecycle management, see the main launch file in this repository.
 
+#### LD200 LIDAR ROS 2 Software Setup
+
+The LD200 LIDAR (LD14P sensor) requires the `ldlidar_ros2` driver package for ROS 2 integration.
+
+**Driver Repository**: https://github.com/ldrobotSensorTeam/ldlidar_ros2
+
+**Installation Instructions**:
+
+1. **Clone the ldlidar_ros2 repository** into your ROS 2 workspace:
+   ```bash
+   cd ~/ros2_ws/src
+   git clone https://github.com/ldrobotSensorTeam/ldlidar_ros2.git
+   ```
+
+2. **Fix WaveShare SDK Bug** (REQUIRED):
+
+   The WaveShare-provided SDK has a bug in `log_module.cpp` that prevents compilation on Linux systems. You must fix this before building.
+
+   **Edit the file**:
+   ```bash
+   vi ~/ros2_ws/src/ldlidar_ros2/sdk/src/log_module.cpp
+   ```
+
+   **Find the incorrect header section** (near the top of the file):
+   ```cpp
+   #ifndef __linux__
+   #include <pthread.h>
+   #include <comutil.h>
+   #pragma comment(lib, "comsuppw.lib")
+   #endif
+   ```
+
+   **Replace with the corrected version**:
+   ```cpp
+   #ifndef __linux__
+   #include <pthread.h>
+   #include <comutil.h>
+   #pragma comment(lib, "comsuppw.lib")
+   #else
+   #include <stdlib.h>
+   #include <pthread.h>
+   #endif
+   ```
+
+   **Key Change**: Add the `#else` block to properly include Linux headers (`stdlib.h` and `pthread.h`) when compiling on Linux systems.
+
+   Save and exit (`:wq` in vi).
+
+3. **Build the package**:
+   ```bash
+   cd ~/ros2_ws
+   colcon build --packages-select ldlidar_ros2
+   ```
+
+4. **Source the workspace**:
+   ```bash
+   source ~/ros2_ws/install/setup.bash
+   ```
+
+**Device Configuration**:
+
+The LD200 LIDAR connects via UART and appears as `/dev/ttyAMA0` on both Raspberry Pi 4B and Raspberry Pi 5 (hardware UART).
+
+**Verify the device**:
+```bash
+ls -l /dev/ttyAMA0
+```
+
+**Test LIDAR Communication**:
+```bash
+stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
+```
+
+Expected result: Binary data stream (appears as scrambled characters). Press `Ctrl+C` to stop.
+
+**Launch the LIDAR Driver**:
+
+The ldlidar_ros2 package provides a standard ROS 2 node that can be launched directly:
+
+```bash
+ros2 launch ldlidar_ros2 ldlidar.launch.py
+```
+
+**Default Configuration**:
+- Serial Port: `/dev/ttyUSB0` (default - needs override to `/dev/ttyAMA0`)
+- Baud Rate: 230400
+- Topic Name: `/scan`
+- Frame ID: `base_laser`
+
+**Custom Launch with /dev/ttyAMA0**:
+
+Create a custom launch configuration or override parameters:
+
+```bash
+ros2 launch ldlidar_ros2 ldlidar.launch.py serial_port:=/dev/ttyAMA0
+```
+
+**Verify LIDAR Data**:
+
+Check that the LIDAR is publishing scan data:
+```bash
+ros2 topic echo /scan
+```
+
+Expected output: `sensor_msgs/LaserScan` messages with range data.
+
+**Lifecycle Node Integration** (for power management):
+
+The `ldlidar_ros2` driver can be integrated as a lifecycle node for the power-saving strategy described in the main README (LIDAR inactive during speed runs).
+
+**Lifecycle Management Example**:
+
+1. **Check node lifecycle state**:
+   ```bash
+   ros2 lifecycle get /ldlidar_node
+   ```
+
+2. **Configure the node**:
+   ```bash
+   ros2 lifecycle set /ldlidar_node configure
+   ```
+
+3. **Activate the node** (start LIDAR scanning):
+   ```bash
+   ros2 lifecycle set /ldlidar_node activate
+   ```
+
+4. **Deactivate the node** (stop LIDAR scanning, save power):
+   ```bash
+   ros2 lifecycle set /ldlidar_node deactivate
+   ```
+
+5. **Shutdown the node**:
+   ```bash
+   ros2 lifecycle set /ldlidar_node shutdown
+   ```
+
+**Power Management Strategy**:
+- **Explore Mode**: Activate LIDAR for SLAM and mapping
+- **Planning Phase**: Deactivate LIDAR to conserve power (~300mA savings)
+- **Run Mode**: Keep LIDAR deactivated during speed runs
+
+This lifecycle approach enables the 150-175 runs per battery charge as described in the README's "Lifecycle Management Approach" section.
+
+**Integration with System Launch File**:
+
+For integration into the main `rr_mousebot.launch.py` launch file, refer to the ldlidar_ros2 repository documentation and your existing lifecycle node patterns in the launch file.
+
+**Troubleshooting**:
+
+- **Permission denied on /dev/ttyAMA0**: Add your user to the `dialout` group:
+  ```bash
+  sudo usermod -aG dialout $USER
+  ```
+  Log out and log back in for changes to take effect.
+
+- **No data on /scan topic**: Verify UART is enabled in `raspi-config` and LIDAR is powered (motor should be spinning)
+
+- **Device not found**: Confirm `/dev/ttyAMA0` exists and UART hardware is enabled (see "Raspberry Pi UART Configuration" section above)
+
 ### Motor Driver Wiring
 
 The Makerverse Motor Driver 2 Channel (CE08038) connects to the Arduino Nano 33 BLE Sense Rev2 for motor control and to the TT motors for drive output.

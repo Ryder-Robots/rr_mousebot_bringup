@@ -34,6 +34,7 @@ def generate_launch_description():
                 ComposableNode(
                     package='udp_driver',
                     plugin='drivers::udp_driver::UdpReceiverNode',
+                    name='udp_receiver_node',
                     parameters=[{
                         "ip": '192.168.2.8',
                         "port": 57410,
@@ -43,6 +44,7 @@ def generate_launch_description():
                 ComposableNode(
                     package='udp_driver',
                     plugin='drivers::udp_driver::UdpSenderNode',
+                    name='udp_sender_node',
                     parameters=[{
                         "ip": '192.168.2.8',
                         "port": 57410,
@@ -52,6 +54,7 @@ def generate_launch_description():
                 ComposableNode(
                     package='serial_driver',
                     plugin='drivers::serial_driver::SerialBridgeNode',
+                    name='serial_bridge_node',
                     parameters=[{
                         "device_name": '/dev/ttyACM0',
                         "baud_rate": 115200,
@@ -71,6 +74,7 @@ def generate_launch_description():
             namespace='sensor',
             package='rclcpp_components',
             executable='component_container',
+            arguments=['--ros-args', '--log-level', 'DEBUG'],
             composable_node_descriptions=[
                 ## Currently the joystick node doesn't want to behave itself when runnning as a component.
                 ## I will need to investigate the reason why, but it seems fine if running as its own
@@ -81,13 +85,15 @@ def generate_launch_description():
                 #     parameters=[{'transport_plugin': 'rr_common_plugins::rr_udp_plugins::RrJoySubscriberUdpPlugin'}, {'--log-level': 'DEBUG'}],
                 #     extra_arguments=[{'use_intra_process_comms': True}],
                 # )
+
+                
                 ComposableNode(
                     package="rr_imu_action",
                     plugin="rr_imu_action::RrImuActionNode",
+                    name="rr_imu_action_node",
                     parameters=[{'transport_plugin': 'rr_common_plugins::rr_serial_plugins::ImuActionSerialPlugin'}],
                     extra_arguments=[
                         {'use_intra_process_comms': True},
-                        {'--log-level': 'DEBUG'},
                     ],
                 )
             ]
