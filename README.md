@@ -130,23 +130,29 @@ This package requires ROS 2 and several dependency packages. Install the followi
    sudo apt install ros-${ROS_DISTRO}-nav2-bringup
    ```
 
-3. **LD200 LIDAR Driver** (ldlidar_ros2)
+3. **LD200 LIDAR Driver** (ldrobot-lidar-ros2)
    ```bash
+   # Install dependencies
+   sudo apt install libudev-dev
+
    # Clone into your ROS 2 workspace
    cd ~/ros2_ws/src
-   git clone https://github.com/ldrobotSensorTeam/ldlidar_ros2.git
+   git clone https://github.com/Myzhar/ldrobot-lidar-ros2.git
+
+   # Apply ROS 2 Kilted patch (REQUIRED)
+   cd ldrobot-lidar-ros2
+   patch -p1 < ../rr_mousebot_bringup/scripts/ldrobot-lidar-ros2-kilted.patch
+
+   # Build the package
+   cd ~/ros2_ws
+   rosdep install --from-paths src --ignore-src -r -y
+   colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --packages-select ldlidar ldlidar_component ldlidar_node
    ```
-   - **IMPORTANT**: Fix WaveShare SDK bug before building:
-     - Edit `src/ldlidar_ros2/sdk/src/log_module.cpp`
-     - Update the header includes to match the corrected version (see [CONSTRUCTION.md](CONSTRUCTION.md))
-   - Then build the package:
-     ```bash
-     cd ~/ros2_ws
-     colcon build --packages-select ldlidar_ros2
-     ```
-   - Driver for LD14P LIDAR sensor (part of D200 Developer Kit)
+   - Native ROS 2 Lifecycle node with NAV2 lifecycle_manager integration
+   - Driver for LD14P LIDAR sensor (part of D200 Developer Kit) - use `model: 'LDLiDAR_LD19'`
    - Device: `/dev/ttyAMA0` (Raspberry Pi hardware UART)
-   - Baud rate: 230400
+   - Topic: `/ldlidar_node/scan`
+   - Patch file: [scripts/ldrobot-lidar-ros2-kilted.patch](scripts/ldrobot-lidar-ros2-kilted.patch)
    - See [CONSTRUCTION.md](CONSTRUCTION.md) for detailed setup and lifecycle management
 
 ### Ryder Robots Core Packages

@@ -577,59 +577,56 @@ For ROS 2 LIDAR driver configuration and lifecycle management, see the main laun
 
 #### LD200 LIDAR ROS 2 Software Setup
 
-The LD200 LIDAR (LD14P sensor) requires the `ldlidar_ros2` driver package for ROS 2 integration.
+The LD200 LIDAR (LD14P sensor) requires the `ldrobot-lidar-ros2` driver package for ROS 2 integration. This driver provides native ROS 2 Lifecycle node support with NAV2 lifecycle manager integration.
 
-**Driver Repository**: https://github.com/ldrobotSensorTeam/ldlidar_ros2
+**Driver Repository**: https://github.com/Myzhar/ldrobot-lidar-ros2
 
 **Installation Instructions**:
 
-1. **Clone the ldlidar_ros2 repository** into your ROS 2 workspace:
+1. **Install dependencies**:
+   ```bash
+   sudo apt install libudev-dev
+   ```
+
+2. **Clone the ldrobot-lidar-ros2 repository** into your ROS 2 workspace:
    ```bash
    cd ~/ros2_ws/src
-   git clone https://github.com/ldrobotSensorTeam/ldlidar_ros2.git
+   git clone https://github.com/Myzhar/ldrobot-lidar-ros2.git
    ```
 
-2. **Fix WaveShare SDK Bug** (REQUIRED):
+3. **Apply ROS 2 Kilted Patch** (REQUIRED for Kilted):
 
-   The WaveShare-provided SDK has a bug in `log_module.cpp` that prevents compilation on Linux systems. You must fix this before building.
+   The upstream driver does not yet support ROS 2 Kilted. Apply the patch from this repository:
 
-   **Edit the file**:
    ```bash
-   vi ~/ros2_ws/src/ldlidar_ros2/sdk/src/log_module.cpp
+   cd ~/ros2_ws/src/ldrobot-lidar-ros2
+   patch -p1 < ../rr_mousebot_bringup/scripts/ldrobot-lidar-ros2-kilted.patch
    ```
 
-   **Find the incorrect header section** (near the top of the file):
-   ```cpp
-   #ifndef __linux__
-   #include <pthread.h>
-   #include <comutil.h>
-   #pragma comment(lib, "comsuppw.lib")
-   #endif
+   **Patch Contents** (for reference):
+   - Adds `kilted` to the supported ROS 2 distributions list
+   - Adds `-DFOUND_KILTED` preprocessor definition for Kilted builds
+   - Sets default serial port to `/dev/ttyAMA0` (Raspberry Pi hardware UART)
+
+   **Verify patch applied successfully**:
+   ```bash
+   git diff --stat
    ```
 
-   **Replace with the corrected version**:
-   ```cpp
-   #ifndef __linux__
-   #include <pthread.h>
-   #include <comutil.h>
-   #pragma comment(lib, "comsuppw.lib")
-   #else
-   #include <stdlib.h>
-   #include <pthread.h>
-   #endif
-   ```
+   Expected output shows modifications to `ldlidar_component/CMakeLists.txt`, `ldlidar_node/CMakeLists.txt`, and `ldlidar_node/params/ldlidar.yaml`.
 
-   **Key Change**: Add the `#else` block to properly include Linux headers (`stdlib.h` and `pthread.h`) when compiling on Linux systems.
-
-   Save and exit (`:wq` in vi).
-
-3. **Build the package**:
+4. **Install ROS dependencies**:
    ```bash
    cd ~/ros2_ws
-   colcon build --packages-select ldlidar_ros2
+   rosdep install --from-paths src --ignore-src -r -y
    ```
 
-4. **Source the workspace**:
+5. **Build the package**:
+   ```bash
+   colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --packages-select ldlidar ldlidar_component ldlidar_node
+   ```
+
+6. **Source the workspace**:
    ```bash
    source ~/ros2_ws/install/setup.bash
    ```
@@ -650,49 +647,91 @@ stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
 
 Expected result: Binary data stream (appears as scrambled characters). Press `Ctrl+C` to stop.
 
+**D200/LD14P Model Configuration**:
+
+The D200 Developer Kit contains the LD14P sensor, which uses the same protocol as the LD19. Configure the driver to use `LDLiDAR_LD19` model.
+
+The patch sets `/dev/ttyAMA0` as the default serial port. If you need to customize other parameters, edit `ldlidar_node/params/ldlidar.yaml`:
+
+```yaml
+/**:
+  ros__parameters:
+    general:
+      debug_mode: false
+
+    comm:
+      serial_port: '/dev/ttyAMA0'  # Raspberry Pi hardware UART
+      baudrate: 230400
+      timeout_msec: 1000
+
+    lidar:
+      model: 'LDLiDAR_LD19'  # Use LD19 for D200/LD14P (same protocol)
+      rot_verse: 'CCW'       # Counter-clockwise (ROS standard)
+      units: 'M'             # Meters (ROS standard)
+      frame_id: 'ldlidar_link'
+      bins: 455              # Fixed scan size for SLAM Toolbox compatibility
+      range_min: 0.03
+      range_max: 15.0
+```
+
 **Launch the LIDAR Driver**:
 
-The ldlidar_ros2 package provides a standard ROS 2 node that can be launched directly:
+The ldrobot-lidar-ros2 package is based on ROS 2 Lifecycle architecture. The node starts in `UNCONFIGURED` state.
 
+**Option 1: Manual Lifecycle Control**
+
+Start the node:
 ```bash
-ros2 launch ldlidar_ros2 ldlidar.launch.py
+ros2 run ldlidar_node ldlidar_node
 ```
 
-**Default Configuration**:
-- Serial Port: `/dev/ttyUSB0` (default - needs override to `/dev/ttyAMA0`)
-- Baud Rate: 230400
-- Topic Name: `/scan`
-- Frame ID: `base_laser`
+Configure the node (establishes connection):
+```bash
+ros2 lifecycle set /ldlidar_node configure
+```
 
-**Custom Launch with /dev/ttyAMA0**:
+Activate the node (starts publishing scans):
+```bash
+ros2 lifecycle set /ldlidar_node activate
+```
 
-Create a custom launch configuration or override parameters:
+**Option 2: Launch with YAML Parameters**
 
 ```bash
-ros2 launch ldlidar_ros2 ldlidar.launch.py serial_port:=/dev/ttyAMA0
+ros2 launch ldlidar_node ldlidar.launch.py
 ```
+
+This starts the node with parameters from `ldlidar.yaml` and a `robot_state_publisher` that provides the static TF transform [`ldlidar_base` → `ldlidar_link`].
+
+**Option 3: Launch with NAV2 Lifecycle Manager (Recommended)**
+
+```bash
+ros2 launch ldlidar_node ldlidar_with_mgr.launch.py
+```
+
+This automatically handles lifecycle transitions using the NAV2 `lifecycle_manager`.
 
 **Verify LIDAR Data**:
 
 Check that the LIDAR is publishing scan data:
 ```bash
-ros2 topic echo /scan
+ros2 topic echo /ldlidar_node/scan
 ```
 
 Expected output: `sensor_msgs/LaserScan` messages with range data.
 
 **Lifecycle Node Integration** (for power management):
 
-The `ldlidar_ros2` driver can be integrated as a lifecycle node for the power-saving strategy described in the main README (LIDAR inactive during speed runs).
+The `ldrobot-lidar-ros2` driver is a native ROS 2 Lifecycle node, ideal for the power-saving strategy described in the main README (LIDAR inactive during speed runs).
 
-**Lifecycle Management Example**:
+**Lifecycle Management**:
 
 1. **Check node lifecycle state**:
    ```bash
    ros2 lifecycle get /ldlidar_node
    ```
 
-2. **Configure the node**:
+2. **Configure the node** (establish connection):
    ```bash
    ros2 lifecycle set /ldlidar_node configure
    ```
@@ -707,7 +746,12 @@ The `ldlidar_ros2` driver can be integrated as a lifecycle node for the power-sa
    ros2 lifecycle set /ldlidar_node deactivate
    ```
 
-5. **Shutdown the node**:
+5. **Cleanup the node**:
+   ```bash
+   ros2 lifecycle set /ldlidar_node cleanup
+   ```
+
+6. **Shutdown the node**:
    ```bash
    ros2 lifecycle set /ldlidar_node shutdown
    ```
@@ -721,7 +765,7 @@ This lifecycle approach enables the 150-175 runs per battery charge as described
 
 **Integration with System Launch File**:
 
-For integration into the main `rr_mousebot.launch.py` launch file, refer to the ldlidar_ros2 repository documentation and your existing lifecycle node patterns in the launch file.
+For integration into the main `rr_mousebot.launch.py` launch file, refer to the ldrobot-lidar-ros2 repository documentation and your existing lifecycle node patterns in the launch file.
 
 **Troubleshooting**:
 
@@ -731,9 +775,15 @@ For integration into the main `rr_mousebot.launch.py` launch file, refer to the 
   ```
   Log out and log back in for changes to take effect.
 
-- **No data on /scan topic**: Verify UART is enabled in `raspi-config` and LIDAR is powered (motor should be spinning)
+- **Transitioning failed on configure**: Check node logs for connection errors. Verify UART is enabled and LIDAR is powered (motor should be spinning).
 
-- **Device not found**: Confirm `/dev/ttyAMA0` exists and UART hardware is enabled (see "Raspberry Pi UART Configuration" section above)
+- **Invalid lidar.model error**: Ensure `model: 'LDLiDAR_LD19'` is set in `ldlidar.yaml`. The D200/LD14P uses the LD19 protocol. Valid models are: `LDLiDAR_LD06`, `LDLiDAR_LD19`, `LDLiDAR_STL27L`.
+
+- **No data on /ldlidar_node/scan topic**: Ensure node is in `ACTIVE` state. Check `ros2 lifecycle get /ldlidar_node`.
+
+- **Device not found**: Confirm `/dev/ttyAMA0` exists and UART hardware is enabled (see "Raspberry Pi UART Configuration" section above).
+
+- **Build fails with "ROS2 kilted is not officially supported"**: Ensure the Kilted patch has been applied. Re-run the patch command from step 3.
 
 ### Motor Driver Wiring
 
