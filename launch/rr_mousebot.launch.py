@@ -19,42 +19,94 @@
 import launch
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
+from launch_ros.actions import Node
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     """launch composable nodes"""
+
+    # Include LDLidar launch
+    ldlidar_launch = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource([
+            get_package_share_directory('ldlidar_node'),
+            '/launch/ldlidar_bringup.launch.py'
+        ]),
+        launch_arguments={
+            'node_name': 'ldlidar_node'
+        }.items()
+    )
+
     return launch.LaunchDescription([
+
+        Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager_navigation',
+            output='screen',
+            parameters=[{
+                'autostart': True,
+                'bond_timeout': 0.0,
+                'node_names': [
+                    '/driver/serial_bridge_node',
+                    '/driver/udp_receiver_node',
+                    '/driver/udp_sender_node',
+                    '/sensor/rr_imu_action_node',
+                    'ldlidar_node',
+                ]
+            }],
+        ),
+
+        # Include LDLidar bringup (lifecycle node)
+        ldlidar_launch,
 
         # Low level communications, serial, and UDP, or bridges to flight controller.
         ComposableNodeContainer(
             name='driver_container',
             namespace='driver',
             package='rclcpp_components',
-            executable='component_container',
+            executable='component_container_mt',
             composable_node_descriptions=[
+                # Note that this is a lifecycle node within this version
                 ComposableNode(
                     package='udp_driver',
                     plugin='drivers::udp_driver::UdpReceiverNode',
+                    namespace='driver',
                     name='udp_receiver_node',
                     parameters=[{
-                        "ip": '192.168.2.8',
+                        "ip": '0.0.0.0',
                         "port": 57410,
                     }],
                     extra_arguments=[{'use_intra_process_comms': True}],
                 ),
+
+                # Note that this is a lifecycle node within this version
                 ComposableNode(
                     package='udp_driver',
                     plugin='drivers::udp_driver::UdpSenderNode',
+                    namespace='driver',
                     name='udp_sender_node',
                     parameters=[{
+                        # transport_driver does not natively support
+                        # SO_BROADCAST option, so change IP Address as
+                        # appropriate
                         "ip": '192.168.2.8',
                         "port": 57410,
                     }],
                     extra_arguments=[{'use_intra_process_comms': True}],
                 ),
+
+                # Note that this is a lifecycle node within this version
+                #
+                # Note that bonding needs to be added to this node, may
+                # be an idea to add it separately and wrapper for the lifecycle
+                # node.
                 ComposableNode(
                     package='serial_driver',
                     plugin='drivers::serial_driver::SerialBridgeNode',
                     name='serial_bridge_node',
+                    namespace='driver',
                     parameters=[{
                         "device_name": '/dev/ttyACM0',
                         "baud_rate": 115200,
@@ -69,24 +121,16 @@ def generate_launch_description():
 
         # Nodes in this container are one level away from raw hardware, but are still low level
         # they are expected to work extremely fast.
+        #
+        # This node should be bonded, this needs to be implemented in next 
+        # iteration of the code.
         ComposableNodeContainer(
             name='sensor_nodes',
             namespace='sensor',
             package='rclcpp_components',
-            executable='component_container',
+            executable='component_container_mt',
             arguments=['--ros-args', '--log-level', 'DEBUG'],
-            composable_node_descriptions=[
-                ## Currently the joystick node doesn't want to behave itself when runnning as a component.
-                ## I will need to investigate the reason why, but it seems fine if running as its own
-                ## executable. (Mmmmm Gremlins)
-                # ComposableNode(
-                #     package='rr_joystick',
-                #     plugin='rrobot::rr_joystick::RRJoystickNode',
-                #     parameters=[{'transport_plugin': 'rr_common_plugins::rr_udp_plugins::RrJoySubscriberUdpPlugin'}, {'--log-level': 'DEBUG'}],
-                #     extra_arguments=[{'use_intra_process_comms': True}],
-                # )
-
-                
+            composable_node_descriptions=[                
                 ComposableNode(
                     package="rr_imu_action",
                     plugin="rr_imu_action::RrImuActionNode",
@@ -96,22 +140,6 @@ def generate_launch_description():
                         {'use_intra_process_comms': True},
                     ],
                 )
-            ]
-        ),
-
-        # Buffer nodes. These nodes provide services and frames for long running services
-        # such as Core Network (ML), path-planner etc
-        ComposableNodeContainer(
-            name='state_nodes',
-            namespace='state',
-            package='rclcpp_components',
-            executable='component_container_mt',
-            composable_node_descriptions=[
-                ComposableNode(
-                    package='rr_state_mgm_srv',
-                    plugin='rrobot::state_frame::RRStateJoyNode',
-                    extra_arguments=[{'use_intra_process_comms': True}, {'--log-level': 'DEBUG'}],                   
-                ),
             ]
         ),
     ])
