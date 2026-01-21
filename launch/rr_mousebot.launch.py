@@ -133,6 +133,7 @@ def generate_launch_description():
             composable_node_descriptions=[                
                 ComposableNode(
                     package="rr_imu_action",
+                    namespace='sensor',
                     plugin="rr_imu_action::RrImuActionNode",
                     name="rr_imu_action_node",
                     parameters=[{'transport_plugin': 'rr_common_plugins::rr_serial_plugins::ImuActionSerialPlugin'}],
