@@ -785,46 +785,53 @@ For integration into the main `rr_mousebot.launch.py` launch file, refer to the 
 
 - **Build fails with "ROS2 kilted is not officially supported"**: Ensure the Kilted patch has been applied. Re-run the patch command from step 3.
 
-### Motor Driver Wiring
+### Motor and Encoder Wiring
 
-The Makerverse Motor Driver 2 Channel (CE08038) connects to the Arduino Nano 33 BLE Sense Rev2 for motor control and to the TT motors for drive output.
+The Micro DC Geared Motors with integrated encoders (FIT0450) connect to both the Makerverse Motor Driver 2 Channel (CE08038) for motor control and to the Arduino Nano 33 BLE Sense Rev2 via the Nano I/O Shield (DFR0012) for encoder signals.
+
+**Motor Documentation**: [DFRobot Micro DC Motor with Encoder-SJ01 Wiki](https://wiki.dfrobot.com/Micro_DC_Motor_with_Encoder-SJ01_SKU__FIT0450)
 
 **Arduino Pinout Reference**: [Arduino Nano 33 BLE Sense Rev2 Pinout](https://docs.arduino.cc/resources/pinouts/ABX00031-full-pinout.pdf)
-
-#### Motor Driver to Arduino Connections
-
-| Motor Driver Pin | Arduino Pin | Wire Color | Signal Type | Description |
-|------------------|-------------|------------|-------------|-------------|
-| DIR-A | D2 | White | Digital Output | Motor A direction control |
-| DIR-B | D4 | White | Digital Output | Motor B direction control |
-| PWM-A | D3 | Yellow | PWM Output | Motor A speed control |
-| PWM-B | D5 | Yellow | PWM Output | Motor B speed control |
 
 **Connection Notes**:
 - DIR pins control motor rotation direction (HIGH/LOW)
 - PWM pins control motor speed (0-255 duty cycle)
 - All control signals are 3.3V logic compatible with Arduino Nano 33 BLE Sense Rev2
 
-#### Motor Driver to TT Motor Connections
+#### Motor A (Left Motor) Complete Wiring
 
-**Motor A (Left Motor)**:
+Each motor has a 6-pin connector with the following connections:
 
-| Motor Driver Terminal | TT Motor Wire | Wire Color | Description |
-|----------------------|---------------|------------|-------------|
-| A+ | Motor positive | Green | Positive terminal |
-| A- | Motor negative | White | Negative terminal |
+| Motor Pin | Pin Name | Connected Device | Device Pin | Description |
+|-----------|----------|------------------|------------|-------------|
+| 1 | Motor Power + | Motor Driver (MKRVRS) | A+ | Motor power supply +, 3-7.5V (Rated 6V) |
+| 2 | Motor Power - | Motor Driver (MKRVRS) | A- | Motor power supply - |
+| 3 | Encoder A Phase | Nano I/O Shield | D8 | Encoder A phase output (digital) |
+| 4 | Encoder B Phase | Nano I/O Shield | D9 | Encoder B phase output (digital) |
+| 5 | Encoder VCC | Nano I/O Shield | VCC (5V) | Encoder power supply (5V) |
+| 6 | Encoder GND | Nano I/O Shield | GND | Encoder ground |
 
-**Motor B (Right Motor)**:
+**Encoder Specifications**:
+- 16 PPR (pulses per revolution) at motor shaft
+- 1920 counts per revolution at output shaft (16 PPR × 120:1 gear ratio)
+- Hall effect sensor type
+- Operating voltage: 5V DC
 
-| Motor Driver Terminal | TT Motor Wire | Wire Color | Description |
-|----------------------|---------------|------------|-------------|
-| B+ | Motor positive | Green | Positive terminal |
-| B- | Motor negative | White | Negative terminal |
+#### Motor B (Right Motor) Complete Wiring
+
+| Motor Pin | Pin Name | Connected Device | Device Pin | Description |
+|-----------|----------|------------------|------------|-------------|
+| 1 | Motor Power + | Motor Driver (MKRVRS) | B+ | Motor power supply +, 3-7.5V (Rated 6V) |
+| 2 | Motor Power - | Motor Driver (MKRVRS) | B- | Motor power supply - |
+| 3 | Encoder A Phase | Nano I/O Shield | D10 | Encoder A phase output (digital) |
+| 4 | Encoder B Phase | Nano I/O Shield | D11 | Encoder B phase output (digital) |
+| 5 | Encoder VCC | Nano I/O Shield | VCC (5V) | Encoder power supply (5V) |
+| 6 | Encoder GND | Nano I/O Shield | GND | Encoder ground |
 
 #### Motor Rotation Direction
 
 **Motor A Clockwise Rotation**:
-- Condition: Green wire (A+) is positive, White wire (A-) is negative, DIR-A is HIGH
+- Condition: Motor Power + (Pin 1) is positive via A+, Motor Power - (Pin 2) is negative via A-, DIR-A is HIGH
 - Result: Motor shaft rotates clockwise when viewed from the shaft end
 - Use case: Forward motion for left wheel
 
@@ -834,7 +841,7 @@ The Makerverse Motor Driver 2 Channel (CE08038) connects to the Arduino Nano 33 
 - Use case: Reverse motion for left wheel
 
 **Motor B Clockwise Rotation**:
-- Condition: Green wire (B+) is positive, White wire (B-) is negative, DIR-B is HIGH
+- Condition: Motor Power + (Pin 1) is positive via B+, Motor Power - (Pin 2) is negative via B-, DIR-B is HIGH
 - Result: Motor shaft rotates clockwise when viewed from the shaft end
 - Use case: Forward motion for right wheel
 
@@ -843,30 +850,48 @@ The Makerverse Motor Driver 2 Channel (CE08038) connects to the Arduino Nano 33 
 - Result: Motor shaft rotates counter-clockwise
 - Use case: Reverse motion for right wheel
 
+#### Encoder Reading
+
+**Quadrature Encoder Operation**:
+- Each motor has two encoder output signals: A Phase and B Phase
+- The phase relationship between A and B determines rotation direction
+- Forward rotation: A leads B by 90° (A changes state before B)
+- Reverse rotation: B leads A by 90° (B changes state before A)
+- Each rising and falling edge can be counted for 4x resolution: 16 PPR × 4 = 64 counts/rev (motor shaft), 7680 counts/rev (output shaft)
+
+**Encoder Pin Connections Summary**:
+- Motor A: D8 (A Phase), D9 (B Phase)
+- Motor B: D10 (A Phase), D11 (B Phase)
+- Both encoders powered by 5V from Nano I/O Shield
+
 #### Wiring Best Practices
 
 1. **Color Coding Consistency**:
    - Use white wires for all DIR (direction) signals
    - Use yellow wires for all PWM (speed) signals
-   - Use green wires for all motor positive terminals
-   - Use white wires for all motor negative terminals
+   - Motors include pre-soldered 6-pin connectors
 
 2. **Wire Management**:
    - Secure wires with cable ties to prevent interference with moving parts
-   - Keep motor driver wires away from encoder signal wires to minimize electrical noise
-   - Route power wires separately from signal wires
+   - Keep motor power wires (pins 1-2) separated from encoder signal wires (pins 3-6) to minimize electrical noise
+   - Route encoder signals away from motor driver PWM signals
+   - Use shielded cable for encoder signals if noise issues occur
 
 3. **Testing Sequence**:
+   - Test encoder signals first before connecting motor power
+   - Verify encoder counts increment/decrement correctly with manual rotation
    - Test each motor individually before full assembly
    - Verify rotation direction matches expected behavior
    - Confirm PWM speed control operates smoothly across 0-255 range
+   - Verify encoder direction detection (A leads B vs B leads A)
 
 4. **Safety**:
    - Double-check polarity before applying power
    - Ensure motor driver heat sink has adequate clearance for cooling
    - Monitor motor driver temperature during initial testing
+   - Verify encoder VCC is connected to 5V (not 3.3V) for proper operation
 
-For motor control firmware implementation, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
+For motor control and encoder reading firmware implementation, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
 
 ---
 

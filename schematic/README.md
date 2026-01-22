@@ -89,13 +89,12 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
 | 360° Omni-directional Triangulation Lidar Dev Kit (8m range) | WS-24659 | 1 | $94.10 | [Core Electronics](https://core-electronics.com.au/360-omni-directional-triangulation-lidar-dev-kit-8m-range.html) | D200 Developer Kit with LD14P Lidar. 8m range, ±1.5% accuracy, 360° scanning, 4000Hz ranging frequency, UART @ 230400 baud (/dev/ttyAMA0 on Pi 4B/Pi 5). 5V DC, ≤300mA operating current. Includes UART to USB adapter. ROS 2 driver: https://github.com/Myzhar/ldrobot-lidar-ros2 (native lifecycle node, use model `LDLiDAR_LD19` for D200/LD14P). For SLAM, mapping, and obstacle detection |
-| Wheel Encoders for DFRobot 3PA and 4WD Rovers | SEN0038 | 2 | $10.15 | [Core Electronics](https://core-electronics.com.au/wheel-encoders-for-dfrobot-3pa-and-4wd-rovers.html) | 20 PPR optical encoders for odometry. Non-contact angular displacement sensing. Includes grating disks and mounting hardware |
 
 ### Motor Control
 
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
-| DC Gearbox Motor - TT Motor - 200RPM - 3 to 6VDC | ADA3777 | 2 | $7.20 | [Core Electronics](https://core-electronics.com.au/dc-gearbox-motor-tt-motor-200rpm-3-to-6vdc.html) | Adafruit TT motor with 1:48 gear ratio. 120-250 RPM, 150mA continuous current, 0.8kg.cm stall torque at 6V. 70x22x18mm, includes 200mm wire leads. For main drive wheels |
+| Micro DC Geared Motor w/ Encoder - SJ01 6V 160RPM 120:1 | FIT0450 | 2 | $13.20 | [Core Electronics](https://core-electronics.com.au/micro-dc-geared-motor-w-encoder-sj01-6v-160rpm-120-1.html) | DFRobot micro DC motor with integrated Hall effect encoder. 120:1 gear ratio, 160 RPM @ 6V, stall torque 0.8 kg.cm. Operating voltage: 3-6V DC, no-load current 45mA, stall current 350mA. Encoder: 16 PPR (pulses per revolution of motor shaft), 1920 counts per revolution at output shaft (16 PPR × 120 gear ratio). Compact design: 25mm length (including output shaft). Includes pre-soldered 6-pin connector. Wiki: https://wiki.dfrobot.com/Micro_DC_Motor_with_Encoder-SJ01_SKU__FIT0450 |
 | Makerverse Motor Driver 2 Channel | CE08038 | 1 | $7.20 | [Core Electronics](https://core-electronics.com.au/makerverse-motor-driver-2-channel.html) | Dual H-bridge motor driver. 1.6A continuous (2A peak), 3-16V input, compatible with 3.3V/5V logic. Includes thermal protection, reverse-polarity protection, and 5V regulator. 35x30mm with M3 mounting holes |
 
 ### Power System
@@ -117,7 +116,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 ### BOM Notes
 
-- **Total Component Cost** (listed items only): ~$478 AUD (excludes battery charger and 3D printed parts)
+- **Total Component Cost** (listed items only): ~$463 AUD (excludes battery charger and 3D printed parts)
 
 - **Power System Summary**: 2S Li-ion configuration (2x 18650 cells in series)
   - Nominal voltage: 7.4V (fresh), ~5.5V (under load/partially discharged)
@@ -140,30 +139,33 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
     - Raspberry Pi 4: 3.0A (typical under load, includes USB power to Arduino Nano)
     - Arduino Nano 33 BLE Sense Rev2: 0.05A (powered via USB from Raspberry Pi, included in Pi's budget)
     - LD14P Lidar: 0.3A (300mA operating current)
-    - Wheel Encoders: 0.04A (2x 20mA)
     - Motor Driver Control: 0.01A (minimal)
-    - **Subtotal 5V Rail**: 3.4A (buck converter rated 5A, 68% utilization)
+    - **Subtotal 5V Rail**: 3.36A (buck converter rated 5A, 67% utilization)
   - **Direct Battery (5.5V-7.4V)**:
-    - TT Motors: 0.3A total (2x 150mA continuous)
-    - **Subtotal Direct**: 0.3A
-  - **System Total**: ~3.7A from battery (7A continuous capacity, 53% utilization)
-  - **Runtime Estimate (Full System Active)**: 7000mAh / 3700mA ≈ 1.9 hours continuous operation
+    - Micro DC Motors with Encoders: 0.09A no-load (2x 45mA), 0.7A stall (2x 350mA max)
+    - Typical operation (partial load): ~0.2A
+    - **Subtotal Direct**: 0.2A typical
+  - **System Total**: ~3.56A from battery typical (7A continuous capacity, 51% utilization)
+  - **Runtime Estimate (Full System Active)**: 7000mAh / 3560mA ≈ 2.0 hours continuous operation
 
 - **Operational Mode Battery Life Analysis**:
   - **Full System Runtime**:
-    - Current draw: 3.7A (all systems active including LIDAR)
-    - Runtime: 7000mAh / 3700mA ≈ **1.9 hours** (114 minutes) continuous operation
+    - Current draw: 3.56A typical (all systems active including LIDAR)
+    - Runtime: 7000mAh / 3560mA ≈ **2.0 hours** (120 minutes) continuous operation
   - **Competition Scenario** (10-minute time limit):
-    - Exploration phase: 10-15 minutes @ 3.7A = 617-925mAh (9-13% battery)
-    - Speed runs with LIDAR inactive: @ 3.4A, minimal battery usage per run
+    - Exploration phase: 10-15 minutes @ 3.56A = 593-890mAh (8-13% battery)
+    - Speed runs with LIDAR inactive: @ 3.26A, minimal battery usage per run
     - **Result**: 5-7 full competition attempts (explore + multiple runs) per full battery charge
     - 360° LIDAR provides comprehensive SLAM and mapping with 8m range and ±1.5% accuracy
 
-- **Motor System Summary**: 2x TT motors for differential drive
-  - Operating voltage: 7.4V nominal (5.5V under load conditions)
-  - Current draw: 150mA per motor (continuous), 300mA total
-  - Speed: ~200 RPM at 6V (estimated ~180-200 RPM at 5.5V under load)
-  - Motor driver provides 1.6A continuous capacity (>5x safety margin)
+- **Motor System Summary**: 2x Micro DC Geared Motors with integrated Hall effect encoders for differential drive
+  - Operating voltage: 3-6V DC (6V nominal, 5.5V typical under load)
+  - Current draw: 45mA per motor no-load, ~100mA typical partial load, 350mA stall (per motor)
+  - Speed: 160 RPM @ 6V (estimated ~145-160 RPM @ 5.5V under load)
+  - Encoder: 16 PPR (motor shaft), 1920 counts per revolution at output shaft (16 PPR × 120:1 gear ratio)
+  - Gear ratio: 120:1
+  - Stall torque: 0.8 kg.cm
+  - Motor driver provides 1.6A continuous capacity (>2x safety margin for typical operation, handles stall current)
 
 - **Assembly Notes**:
   - **Nano I/O Shield (DFR0012) Configuration (CRITICAL)**:
@@ -194,12 +196,11 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 - **Raspberry Pi 4 8GB**: Provides adequate computational power for ROS 2 nodes, SLAM algorithms, and path planning. 8GB RAM ensures headroom for development and debugging. 3A typical current draw fits within 5A buck converter capacity
 - **Arduino Nano 33 BLE Sense Rev2**: Powerful nRF52840 microcontroller (64MHz, 1MB Flash) handles real-time motor control and sensor interfacing. Integrated 9-axis IMU, environmental sensors, and Bluetooth 5 provide extensive sensing capabilities beyond basic motor control. Low power consumption (50mA typical) and 3.3V I/O compatible with modern sensors
 - **360° LIDAR (LD14P)**: 8m range exceeds maze dimensions (~2.5m), ±1.5% accuracy suitable for 18cm grid navigation. 360° scanning at 4000Hz ranging frequency enables comprehensive SLAM and obstacle detection. UART interface @ 230400 baud on /dev/ttyAMA0 (Raspberry Pi hardware UART, compatible with both Pi 4B and Pi 5). Low power consumption (≤300mA) with native ROS 2 Lifecycle node support via ldrobot-lidar-ros2 driver (https://github.com/Myzhar/ldrobot-lidar-ros2) - use `model: 'LDLiDAR_LD19'` for D200/LD14P sensor. Includes D200 developer kit with UART to USB adapter
-- **Wheel Encoders**: 20 PPR resolution provides ~1.8° angular resolution for odometry and closed-loop speed control
-- **TT Motors**: Compact form factor (70x22x18mm) fits within micromouse footprint constraints. 1:48 gear ratio provides good balance between speed (~200 RPM) and torque (0.8kg.cm stall) for maze navigation. Low current draw (150mA continuous) ensures efficient battery usage. Pre-attached 200mm leads simplify wiring
-- **Motor Driver**: 1.6A continuous current rating provides >5x safety margin over motor requirements (300mA total). Dual H-bridge enables independent bidirectional control for differential drive. Built-in 5V regulator, thermal protection, and compact form factor (35x30mm) with M3 mounting holes
-- **Battery System**: Samsung 18650 cells chosen for high energy density (3500mAh), reliable performance, and proven track record. 2S configuration (7.4V nominal) provides appropriate voltage for motor driver input (3-16V range) and buck converter regulation. 51.8Wh total capacity supports ~1.9 hours continuous operation
-- **Buck Converter**: Single XL4015 module provides reliable 5V regulation with 5A capacity exceeding system requirements (3.7A total load including Raspberry Pi, LIDAR, encoders, and Arduino Nano via USB). Adjustable output voltage via 30-turn potentiometer enables precise 5.0V tuning with flathead screwdriver. Wide input range (4-38V) accommodates battery voltage variation during discharge. Arduino Nano powered via USB from Raspberry Pi eliminates need for separate 3.3V rail
-- **Rubber Tire Wheels**: 65mm diameter wheels with black rubber tires provide good traction for differential drive robot. Sold as pair (2 wheels), compatible with DAGU right angle gear motors and suitable for TT motor mounting. Compact diameter fits within micromouse footprint constraints while providing adequate ground clearance
+- **Micro DC Geared Motors with Encoders (FIT0450)**: Ultra-compact design (25mm length) fits within tight micromouse footprint. 120:1 gear ratio provides excellent balance between speed (160 RPM @ 6V) and torque (0.8 kg.cm stall) for maze navigation. Integrated Hall effect encoder (16 PPR motor shaft = 1920 counts/rev at output shaft) eliminates need for separate encoder modules. Low power consumption: 45mA no-load, ~100mA typical operation. Pre-soldered 6-pin connector simplifies wiring. Comprehensive documentation: https://wiki.dfrobot.com/Micro_DC_Motor_with_Encoder-SJ01_SKU__FIT0450
+- **Motor Driver**: 1.6A continuous current rating provides adequate safety margin (>8x for typical 200mA operation, >2x for 700mA stall current). Dual H-bridge enables independent bidirectional control for differential drive. Built-in 5V regulator, thermal protection, and compact form factor (35x30mm) with M3 mounting holes
+- **Battery System**: Samsung 18650 cells chosen for high energy density (3500mAh), reliable performance, and proven track record. 2S configuration (7.4V nominal) provides appropriate voltage for motor driver input (3-16V range) and buck converter regulation. 51.8Wh total capacity supports ~2.0 hours continuous operation
+- **Buck Converter**: Single XL4015 module provides reliable 5V regulation with 5A capacity exceeding system requirements (3.36A 5V rail + ~0.2A motors = 3.56A total load). Adjustable output voltage via 30-turn potentiometer enables precise 5.0V tuning with flathead screwdriver. Wide input range (4-38V) accommodates battery voltage variation during discharge. Arduino Nano powered via USB from Raspberry Pi eliminates need for separate 3.3V rail
+- **Rubber Tire Wheels**: 65mm diameter wheels with black rubber tires provide good traction for differential drive robot. Sold as pair (2 wheels), compatible with DAGU right angle gear motors and suitable for micro DC motor mounting. Compact diameter fits within micromouse footprint constraints while providing adequate ground clearance
 - **Heat-Set Inserts**: Brass M3 inserts provide strong, reusable threaded mounting points in 3D printed chassis. Superior to directly threading into plastic, allowing repeated assembly/disassembly without thread degradation. 50-pack provides sufficient quantity for entire robot assembly
 - **Caster Wheel**: Small form factor (32.4mm) provides additional support point for stability during omnidirectional maneuvers
 - **Mounting Hardware**: M3 standoffs provide secure mounting for motor driver and other electronics while maintaining proper spacing from chassis
