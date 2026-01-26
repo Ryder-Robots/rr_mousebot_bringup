@@ -584,6 +584,13 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
    ```bash
    sudo usermod -a -G gpio $USER
    ```
+
+5. **Set GPIO memory device permissions**:
+   ```bash
+   sudo chgrp gpio /dev/gpiomem
+   ```
+   This allows users in the `gpio` group to access GPIO memory directly.
+
    Log out and log back in for group membership to take effect.
 
 **Test GPIO Configuration**:
