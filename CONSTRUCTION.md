@@ -580,6 +580,12 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
    sudo apt install ./wiringpi_3.16_arm64.deb
    ```
 
+4. **Add user to GPIO group** (required for non-root GPIO access):
+   ```bash
+   sudo usermod -a -G gpio $USER
+   ```
+   Log out and log back in for group membership to take effect.
+
 **Test GPIO Configuration**:
 
 After installation, verify all GPIO pins are accessible and correctly configured:
