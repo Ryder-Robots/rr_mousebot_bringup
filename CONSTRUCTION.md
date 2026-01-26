@@ -550,6 +550,49 @@ stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
 - Ensure no other service is using `/dev/ttyAMA0` (check with `sudo lsof | grep ttyAMA0`)
 - On Raspberry Pi 5, UART configuration may differ slightly from Pi 4 - consult official documentation if issues persist
 
+#### GPIO Testing with WiringPi
+
+WiringPi provides a convenient command-line tool for testing and verifying GPIO pin configurations on Raspberry Pi.
+
+**WiringPi Repository**: https://github.com/WiringPi/WiringPi
+
+**Installation**:
+
+1. **Create temporary directory and download**:
+   ```bash
+   mkdir -p ${HOME}/tmp
+   cd ${HOME}/tmp
+   wget https://github.com/WiringPi/WiringPi/releases/download/3.16/wiringpi_3.16_arm64.deb
+   chmod 755 ${HOME}/tmp
+   ```
+
+2. **Verify download integrity**:
+   ```bash
+   sha256sum ./wiringpi_3.16_arm64.deb
+   ```
+
+   **Expected hash**: `db494454383e72b9af5ca1617a77e571da1ceb4f50279f7efe45bb4c3c863ff6`
+
+   ⚠️ **Do not proceed if the hash does not match** - re-download or check for updated release.
+
+3. **Install the package**:
+   ```bash
+   sudo apt install ./wiringpi_3.16_arm64.deb
+   ```
+
+**Test GPIO Configuration**:
+
+After installation, verify all GPIO pins are accessible and correctly configured:
+
+```bash
+gpio readall
+```
+
+This displays a table showing all GPIO pins, their modes (IN/OUT/ALT), and current values. Use this to:
+- Verify UART pins (GPIO14/GPIO15) are in ALT mode for serial communication
+- Confirm GPIO pins are available for encoder inputs
+- Debug pin configuration issues before connecting hardware
+
 #### ROS 2 Integration
 
 **UART Device Path**: `/dev/serial0`
