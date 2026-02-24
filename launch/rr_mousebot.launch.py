@@ -75,35 +75,31 @@ def generate_launch_description():
                     name='motor_left',
                     namespace='',
                     parameters=[{
-                        'motor_pos': 0,
+                        'motor_count': 2,
                         'ppr': 8,
-                        'wheel_radius': 20,
-                        'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
-                        'pwm_pin': 18,
-                        'dir_pin': 23,
+                        'wheel_radius': 20,   # 20 mm radius = 40 mm diameter wheels
+                        'wheel_base':   70,   # 70 mm between left and right wheel contact points
                         'pwm_freq': 1000,
-                        'encoder_pin': 9,
+                        # One pin per motor: index 0 = left, index 1 = right
+                        'encoder_pins': [9, 8],
+                        'pwm_pins':     [18, 19],
+                        'dir_pins':     [23, 24],
                         'encoder_timeout': 500000,
+                        # Raspberry Pi 4B GPIO plugin — see https://github.com/Ryder-Robots/rr_gpio_pi4b_pigpio_plugin
+                        'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
+                        # 6×6 row-major pose covariance [x, y, z, roll, pitch, yaw].
+                        # Diagonal: x=0.01, y=0.01, z=1e6, roll=1e6, pitch=1e6, yaw=0.01
+                        # z, roll, pitch set to 1e6 — not tracked on a flat floor.
+                        'covariance': [
+                            0.01, 0.0,  0.0,  0.0,  0.0,  0.0,
+                            0.0,  0.01, 0.0,  0.0,  0.0,  0.0,
+                            0.0,  0.0,  1e6,  0.0,  0.0,  0.0,
+                            0.0,  0.0,  0.0,  1e6,  0.0,  0.0,
+                            0.0,  0.0,  0.0,  0.0,  1e6,  0.0,
+                            0.0,  0.0,  0.0,  0.0,  0.0,  0.01,
+                        ],
                     }],
                 ),
-
-                # ComposableNode(
-                #     package='rr_motor_controller',
-                #     plugin='rr_motor_controller::RrMotorControllerNode',
-                #     name='motor_right',
-                #     namespace='',
-                #     parameters=[{
-                #         'motor_pos': 1,
-                #         'ppr': 8,
-                #         'wheel_radius': 20,
-                #         'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
-                #         'pwm_pin': 19,
-                #         'dir_pin': 24,
-                #         'pwm_freq': 1000,
-                #         'encoder_pin': 8,
-                #         'encoder_timeout': 500000,
-                #     }],
-                # ),
 
                 # Note that this is a lifecycle node within this version
                 # ComposableNode(
