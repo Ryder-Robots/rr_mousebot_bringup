@@ -64,7 +64,7 @@ def generate_launch_description():
                         'wheel_base':   70,   # 70 mm between left and right wheel contact points
                         'pwm_freq': 1000,
                         # One pin per motor: index 0 = left, index 1 = right
-                        'encoder_pins': [9, 8],
+                        'encoder_pins': [8, 9],
                         'pwm_pins':     [18, 19],
                         'dir_pins':     [23, 24],
                         'encoder_timeout': 500000,
@@ -118,24 +118,24 @@ def generate_launch_description():
         TimerAction(
             period=3.0,
             actions=[
-                Node(
-                    package='nav2_lifecycle_manager',
-                    executable='lifecycle_manager',
-                    name='lifecycle_manager_navigation',
-                    output='screen',
-                    parameters=[{
-                        'autostart': False,
-                        'bond_timeout': 4.0,
-                        'node_names': [
-                #             'lidar_node',
-                            '/driver/motor_controller',
-                #             '/driver/serial_bridge_node',
-                #             '/driver/udp_receiver_node',
-                #             '/driver/udp_sender_node',
-                #             '/sensor/rr_imu_action_node',
-                        ]
-                    }],
-                ),
+            Node(
+                package='nav2_lifecycle_manager',
+                executable='lifecycle_manager',
+                name='lifecycle_manager_navigation',
+                output='screen',
+                parameters=[{
+                    'autostart': False,
+                    'bond_timeout': 4.0,
+                    'node_names': [
+            #             'lidar_node',
+                        '/driver/motor_controller',
+            #             '/driver/serial_bridge_node',
+            #             '/driver/udp_receiver_node',
+            #             '/driver/udp_sender_node',
+            #             '/sensor/rr_imu_action_node',
+                    ]
+                }],
+            ),
             ]
         )
     ])

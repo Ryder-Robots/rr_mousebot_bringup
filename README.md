@@ -40,21 +40,35 @@ The robot is designed to comply with standard IEEE Micromouse specifications:
 
 ## Architecture
 
-The `rr_mousebot.launch.py` launch file initializes a multi-container ROS 2 system with composable nodes organized by function:
+The `rr_mousebot.launch.py` launch file initializes a composable node container and a delayed lifecycle manager.
 
-### Driver Container
-Low-level communication interfaces for hardware control:
-- **UDP Driver (Receiver/Sender)**: Network communication on 192.168.2.8:57410 for telemetry and debugging
-- **Serial Bridge**: Communication with motor controllers and sensors via `/dev/ttyACM0` at 115200 baud (8N1 configuration)
+### Driver Container (`driver_container`)
 
-### Sensor Container
-Sensor processing nodes for maze perception and navigation (currently empty, awaiting sensor integration)
+Runs as `component_container_mt` (multi-threaded) under the `/driver` namespace.
 
-### State Container
-State management and control logic:
-- **State Joy Node**: Joystick/control state management for manual override and testing
+**Active nodes:**
 
-All nodes are configured to use intra-process communication for reduced latency.
+- **Motor Controller** (`rr_motor_controller::RrECU`, plugin: `rr_motor_controller::RrECU`):
+  Lifecycle node (`nav2_util::LifecycleNode`) providing dual-motor PWM drive, quadrature encoder odometry, and odometry publishing.
+  - GPIO transport: `rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin` (Raspberry Pi 4B)
+  - Encoder pins: `[9, 8]` (left, right); PWM pins: `[18, 19]`; Direction pins: `[23, 24]`
+  - Wheel radius: 20 mm; wheel base: 70 mm; PPR: 8; PWM frequency: 1000 Hz
+  - Encoder timeout: 500 000 µs
+  - `use_intra_process_comms: True`
+
+**Pending nodes (commented out, awaiting integration):**
+
+- **UDP Receiver/Sender** (`udp_driver`): Network telemetry and debugging transport
+
+### Lifecycle Manager
+
+`nav2_lifecycle_manager` is launched with a **3-second `TimerAction` delay** to allow the driver container and its composable nodes to fully initialise before the manager attempts to discover them.
+
+- `autostart: False` — lifecycle transitions are triggered manually (for debugging)
+- `bond_timeout: 4.0 s` — heartbeat monitoring active once nodes reach the `active` state
+- Manages: `/driver/motor_controller`
+
+**Pending managed nodes (commented out):** `lidar_node`, `/driver/serial_bridge_node`, `/driver/udp_receiver_node`, `/driver/udp_sender_node`, `/sensor/rr_imu_action_node`
 
 ## Lifecycle Management Approach
 
@@ -216,13 +230,20 @@ ros2 launch rr_mousebot_bringup rr_mousebot.launch.py
 
 ## Manually configuring nodes
 
+With `autostart: False`, the lifecycle manager starts but does not transition any nodes automatically. Use the service call or direct lifecycle commands:
+
 ```bash
- ros2 lifecycle get /serial_bridge_node
- # unconfigured [1]
- ros2 lifecycle set /serial_bridge_node configure
- # Transitioning successful
- ros2 lifecycle set /serial_bridge_node activate
- # Transitioning successful
+# Trigger full startup (configure + activate all managed nodes) via lifecycle manager:
+ros2 service call /lifecycle_manager_navigation/manage_nodes \
+  nav2_msgs/srv/ManageLifecycleNodes "{command: 0}"
+
+# Or drive the motor controller directly, one step at a time:
+ros2 lifecycle get /driver/motor_controller
+# unconfigured [1]
+ros2 lifecycle set /driver/motor_controller configure
+# Transitioning successful
+ros2 lifecycle set /driver/motor_controller activate
+# Transitioning successful
 ```
 
 ## Developer Notes
