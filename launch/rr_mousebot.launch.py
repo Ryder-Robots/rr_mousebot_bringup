@@ -23,6 +23,7 @@ from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
+from launch.actions import TimerAction
 
 def generate_launch_description():
     """launch composable nodes"""
@@ -114,22 +115,27 @@ def generate_launch_description():
                 # ),
             ],
         ),
-        Node(
-             package='nav2_lifecycle_manager',
-             executable='lifecycle_manager',
-             name='lifecycle_manager_navigation',
-             output='screen',
-             parameters=[{
-                 'autostart': False,
-                 'bond_timeout': 4.0,
-                 'node_names': [
-        #             'lidar_node',
-                     '/driver/motor_controller',
-        #             '/driver/serial_bridge_node',
-        #             '/driver/udp_receiver_node',
-        #             '/driver/udp_sender_node',
-        #             '/sensor/rr_imu_action_node',
-                 ]
-             }],
-        ),
+        TimerAction(
+            period=3.0,
+            actions=[
+                Node(
+                    package='nav2_lifecycle_manager',
+                    executable='lifecycle_manager',
+                    name='lifecycle_manager_navigation',
+                    output='screen',
+                    parameters=[{
+                        'autostart': False,
+                        'bond_timeout': 4.0,
+                        'node_names': [
+                #             'lidar_node',
+                            '/driver/motor_controller',
+                #             '/driver/serial_bridge_node',
+                #             '/driver/udp_receiver_node',
+                #             '/driver/udp_sender_node',
+                #             '/sensor/rr_imu_action_node',
+                        ]
+                    }],
+                ),
+            ]
+        )
     ])
