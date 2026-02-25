@@ -39,23 +39,27 @@ def generate_launch_description():
     # )
 
     return launch.LaunchDescription([
-        # Node(
-        #     package='nav2_lifecycle_manager',
-        #     executable='lifecycle_manager',
-        #     name='lifecycle_manager_navigation',
-        #     output='screen',
-        #     parameters=[{
-        #         'autostart': True,
-        #         'bond_timeout': 0.0,
-        #         'node_names': [
+        Node(
+             package='nav2_lifecycle_manager',
+             executable='lifecycle_manager',
+             name='lifecycle_manager_navigation',
+             output='screen',
+             parameters=[{
+                 'autostart': False,
+
+                 # Needed for heartbeat, this will be added to nodes
+                 # so it can be supported.
+                 'bond_timeout': 0.0,
+                 'node_names': [
+        #             'lidar_node',
+                     '/driver/motor_controller',
         #             '/driver/serial_bridge_node',
         #             '/driver/udp_receiver_node',
         #             '/driver/udp_sender_node',
         #             '/sensor/rr_imu_action_node',
-        #             'ldlidar_node',
-        #         ]
-        #     }],
-        # ),
+                 ]
+             }],
+        ),
 
         # Include LDLidar bringup (lifecycle node)
         # ldlidar_launch,
@@ -66,14 +70,14 @@ def generate_launch_description():
             namespace='driver',
             package='rclcpp_components',
             executable='component_container_mt',
-            arguments=['--ros-args', '--log-level', 'info'],
+            arguments=['--ros-args', '--log-level', 'debug'],
             composable_node_descriptions=[
 
                 ComposableNode(
                     package='rr_motor_controller',
-                    plugin='rr_motor_controller::RrMotorController',
-                    name='motor_left',
-                    namespace='',
+                    plugin='rr_motor_controller::RrECU',
+                    name='motor_controller',
+                    namespace='driver',
                     parameters=[{
                         'motor_count': 2,
                         'ppr': 8,
