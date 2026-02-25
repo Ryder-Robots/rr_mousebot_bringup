@@ -47,8 +47,7 @@ def generate_launch_description():
             name='driver_container',
             namespace='driver',
             package='rclcpp_components',
-            executable='component_container_isolated',
-            # executable='component_container_mt',
+            executable='component_container_mt',
             arguments=['--ros-args', '--log-level', 'debug'],
             composable_node_descriptions=[
 
@@ -82,6 +81,7 @@ def generate_launch_description():
                             0.0,  0.0,  0.0,  0.0,  0.0,  0.01,
                         ],
                     }],
+                    extra_arguments=[{'use_intra_process_comms': True}],
                 ),
 
                 # Note that this is a lifecycle node within this version
@@ -114,26 +114,22 @@ def generate_launch_description():
                 # ),
             ],
         ),
-        # Node(
-        #      package='nav2_lifecycle_manager',
-        #      executable='lifecycle_manager',
-        #      name='lifecycle_manager_navigation',
-        #      output='screen',
-        #      parameters=[{
-        #          'autostart': False,
-                
-        #          # Currently unsupported by motor_controller,
-        #          # but will be added set in laster versions to
-        #          # allow heartbeat monitoring.
-        #          'bond_timeout': 0.0,
-        #          'node_names': [
-        # #             'lidar_node',
-        #              '/driver/motor_controller',
-        # #             '/driver/serial_bridge_node',
-        # #             '/driver/udp_receiver_node',
-        # #             '/driver/udp_sender_node',
-        # #             '/sensor/rr_imu_action_node',
-        #          ]
-        #      }],
-        # ),
+        Node(
+             package='nav2_lifecycle_manager',
+             executable='lifecycle_manager',
+             name='lifecycle_manager_navigation',
+             output='screen',
+             parameters=[{
+                 'autostart': False,
+                 'bond_timeout': 4.0,
+                 'node_names': [
+        #             'lidar_node',
+                     '/driver/motor_controller',
+        #             '/driver/serial_bridge_node',
+        #             '/driver/udp_receiver_node',
+        #             '/driver/udp_sender_node',
+        #             '/sensor/rr_imu_action_node',
+                 ]
+             }],
+        ),
     ])
