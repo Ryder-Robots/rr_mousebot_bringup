@@ -47,7 +47,8 @@ def generate_launch_description():
             name='driver_container',
             namespace='driver',
             package='rclcpp_components',
-            executable='component_container_mt',
+            executable='component_container_isolated',
+            # executable='component_container_mt',
             arguments=['--ros-args', '--log-level', 'debug'],
             composable_node_descriptions=[
 
