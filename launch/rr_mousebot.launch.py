@@ -39,28 +39,6 @@ def generate_launch_description():
     # )
 
     return launch.LaunchDescription([
-        Node(
-             package='nav2_lifecycle_manager',
-             executable='lifecycle_manager',
-             name='lifecycle_manager_navigation',
-             output='screen',
-             parameters=[{
-                 'autostart': False,
-
-                 # Needed for heartbeat, this will be added to nodes
-                 # so it can be supported.
-                 'bond_timeout': 0.0,
-                 'node_names': [
-        #             'lidar_node',
-                     '/driver/motor_controller',
-        #             '/driver/serial_bridge_node',
-        #             '/driver/udp_receiver_node',
-        #             '/driver/udp_sender_node',
-        #             '/sensor/rr_imu_action_node',
-                 ]
-             }],
-        ),
-
         # Include LDLidar bringup (lifecycle node)
         # ldlidar_launch,
 
@@ -134,5 +112,27 @@ def generate_launch_description():
                 #     extra_arguments=[{'use_intra_process_comms': True}],
                 # ),
             ],
+        ),
+        Node(
+             package='nav2_lifecycle_manager',
+             executable='lifecycle_manager',
+             name='lifecycle_manager_navigation',
+             output='screen',
+             parameters=[{
+                 'autostart': False,
+                
+                 # Currently unsupported by motor_controller,
+                 # but will be added set in laster versions to
+                 # allow heartbeat monitoring.
+                 'bond_timeout': 0.0,
+                 'node_names': [
+        #             'lidar_node',
+                     '/driver/motor_controller',
+        #             '/driver/serial_bridge_node',
+        #             '/driver/udp_receiver_node',
+        #             '/driver/udp_sender_node',
+        #             '/sensor/rr_imu_action_node',
+                 ]
+             }],
         ),
     ])
