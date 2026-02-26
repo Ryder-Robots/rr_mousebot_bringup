@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rr_mousebot_bringup</name>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <description>Launch package for launching mousebot maze solver</description>
   <maintainer email="azzmosphere@gmail.com">aaron</maintainer>
   <license>MIT</license>
@@ -11,8 +11,8 @@
 
   <depend>launch</depend>
   <depend>nav2_util</depend>
-  <depend>ros-kilted-rr-motor-controller</depend>
-  <depend>ros-kilted-rr-gpio-pi4b-pigpio-plugin</depend>
+  <depend>rr_motor_controller</depend>
+  <depend>rrr_gpio_pi4b_pigpio_plugin</depend>
 
 
   <exec_depend>nav2_lifecycle_manager</exec_depend>
