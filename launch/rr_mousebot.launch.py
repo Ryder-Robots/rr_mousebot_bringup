@@ -64,9 +64,9 @@ def generate_launch_description():
                         'wheel_base':   70,   # 70 mm between left and right wheel contact points
                         'pwm_freq': 1000,
                         # One pin per motor: index 0 = left, index 1 = right
-                        'encoder_pins': [8, 9],
-                        'pwm_pins':     [18, 19],
-                        'dir_pins':     [23, 24],
+                        'encoder_pins': [17, 22],    # LEFT=17, RIGHT=22
+                        'pwm_pins':     [12, 13],    # LEFT=12(HW PWM0), RIGHT=13(HW PWM1)
+                        'dir_pins':     [27, 23],    # LEFT=27, RIGHT=23
                         'encoder_timeout': 500000,
                         # Raspberry Pi 4B GPIO plugin — see https://github.com/Ryder-Robots/rr_gpio_pi4b_pigpio_plugin
                         'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
