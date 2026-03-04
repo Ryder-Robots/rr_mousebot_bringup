@@ -26,7 +26,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch.actions import TimerAction
 
 def generate_launch_description():
-    """launch composable nodes"""
+    """Launch composable nodes."""
 
     # Include LDLidar launch
     # ldlidar_launch = IncludeLaunchDescription(
@@ -64,9 +64,11 @@ def generate_launch_description():
                         'wheel_base':   70,   # 70 mm between left and right wheel contact points
                         'pwm_freq': 1000,
                         # One pin per motor: index 0 = left, index 1 = right
-                        'encoder_pins': [17, 22],    # LEFT=17, RIGHT=22
-                        'pwm_pins':     [12, 13],    # LEFT=12(HW PWM0), RIGHT=13(HW PWM1)
-                        'dir_pins':     [27, 23],    # LEFT=27, RIGHT=23
+                        #
+                        # Note: for wiring, B represents H-Bridge B and A represents A on H-bridge
+                        'encoder_pins': [17, 22],    # LEFT=17 (B), RIGHT=22 (A)
+                        'pwm_pins':     [12, 13],    # LEFT=12(HW PWM0 B), RIGHT=13(HW PWM1 A)
+                        'dir_pins':     [27, 23],    # LEFT=27 (B), RIGHT=23 (A)
                         'encoder_timeout': 500000,
                         # Raspberry Pi 4B GPIO plugin — see https://github.com/Ryder-Robots/rr_gpio_pi4b_pigpio_plugin
                         'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
