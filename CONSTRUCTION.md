@@ -7,10 +7,12 @@ This guide provides detailed instructions for 3D printing and assembling the RR 
 All 3D printable files are located in the `schematic/stl/` directory. Files are provided in both STL and 3MF formats:
 
 **Available Files:**
+
 - `body.stl` / `body.3mf`: Main robot chassis
 - `drive_shaft.stl` / `drive_shaft.3mf`: Motor drive shaft
 
 **Format Recommendations:**
+
 - **3MF Format** (recommended): Use with Elegoo Slicer for preserved scale, units, and metadata
 - **STL Format**: Universal compatibility with any slicer software
 
@@ -44,17 +46,20 @@ PETG is hygroscopic and must be thoroughly dried before printing to prevent mois
 #### Creality Filament Heater Settings
 
 **Pre-Loading Drying (New or Exposed Filament)**:
+
 - Temperature: 65-70°C
 - Duration: 4-6 hours
 - Purpose: Remove absorbed moisture before loading into printer
 
 **Quick Dry (Recently Exposed Filament)**:
+
 - Temperature: 60°C
 - Duration: 2-4 hours
 - Purpose: Light moisture removal without risking filament softening
 - Note: Avoid higher temperatures to prevent PETG deformation
 
 **Storage Mode (Active Storage)**:
+
 - Temperature: 50-55°C
 - Duration: Indefinite (while filament is loaded)
 - Purpose: Maintain dry state during extended print sessions
@@ -70,13 +75,14 @@ Configure these settings in your slicer (Elegoo Slicer recommended) for optimal 
 #### Temperature Settings
 
 | Parameter | Temperature | Notes |
-|-----------|-------------|-------|
+| ----------- | ------------- | ------- |
 | Nozzle (Standard) | 230-250°C | Start at 240°C for initial calibration |
 | Nozzle (First Layer) | 245°C | Higher temp improves bed adhesion |
 | Heated Bed | 70-80°C | Preheat for 10 minutes before printing |
 | Chamber (with Creality mod) | 40-50°C | Enclosed chamber maintains stable temperature |
 
 **Temperature Tuning**:
+
 - If stringing occurs: Reduce nozzle temp by 5°C increments
 - If layer adhesion is weak: Increase nozzle temp by 5°C increments
 - If warping occurs: Increase bed temp to 80°C
@@ -84,7 +90,7 @@ Configure these settings in your slicer (Elegoo Slicer recommended) for optimal 
 #### Print Speed Settings
 
 | Parameter | Speed | Notes |
-|-----------|-------|-------|
+| ----------- | ------- | ------- |
 | First Layer | 20-30 mm/s | Slow for optimal bed adhesion |
 | Perimeters | 30-40 mm/s | Balance quality and speed |
 | Infill | 40-50 mm/s | Can be faster than perimeters |
@@ -94,12 +100,13 @@ Configure these settings in your slicer (Elegoo Slicer recommended) for optimal 
 #### Cooling Settings
 
 | Parameter | Setting | Notes |
-|-----------|---------|-------|
+| ----------- | --------- | ------- |
 | Part Cooling Fan | 10-30% | PETG requires minimal cooling |
 | First Layer Fan | 0% | No cooling for first layer adhesion |
 | Bridging Fan | 40-50% | Increase for overhangs/bridges |
 
 **Cooling Notes**:
+
 - PETG is sensitive to over-cooling which causes warping and poor layer adhesion
 - Use minimum cooling for structural parts
 - Increase cooling slightly for detailed features or overhangs
@@ -107,19 +114,20 @@ Configure these settings in your slicer (Elegoo Slicer recommended) for optimal 
 #### Retraction Settings
 
 | Parameter | Setting | Notes |
-|-----------|---------|-------|
+| ----------- | --------- | ------- |
 | Retraction Distance | 0.5-1.0 mm | Start at 0.8mm for direct drive |
 | Retraction Speed | 40 mm/s | Prevents nozzle clogging |
 | Z-Hop on Retraction | 0.2 mm | Optional, reduces surface artifacts |
 
 **Retraction Tuning**:
+
 - Increase distance if stringing persists (up to 1.5mm max)
 - Decrease if you observe clogging or under-extrusion after travels
 
 #### Layer and Extrusion Settings
 
 | Parameter | Setting | Notes |
-|-----------|---------|-------|
+| ----------- | --------- | ------- |
 | Layer Height | 0.2 mm | Standard quality (0.12-0.28mm range) |
 | First Layer Height | 0.2 mm | Match standard layer height |
 | Line Width | 0.4 mm | Match nozzle diameter |
@@ -131,13 +139,14 @@ Configure these settings in your slicer (Elegoo Slicer recommended) for optimal 
 #### Bed Adhesion
 
 | Parameter | Setting | Notes |
-|-----------|---------|-------|
+| ----------- | --------- | ------- |
 | Bed Surface | PEI Sheet or Glass with Glue Stick | Clean before each print |
 | First Layer Flow | 105-110% | Slight over-extrusion for adhesion |
 | Brim | Optional (5-10mm) | Use for small contact areas |
 | Supports | Auto-generate | Enable for overhangs >50° |
 
 **Bed Preparation**:
+
 1. Clean PEI sheet with isopropyl alcohol before each print
 2. For glass bed: Apply thin layer of glue stick or hairspray
 3. Allow bed to preheat for 10 minutes to ensure even temperature distribution
@@ -148,7 +157,7 @@ Configure these settings in your slicer (Elegoo Slicer recommended) for optimal 
 
 Create a custom PETG profile in Elegoo Slicer with these settings:
 
-```
+```text
 Filament: PETG
 Nozzle: 240°C (first layer 245°C)
 Bed: 75°C
@@ -169,7 +178,7 @@ Supports: Auto (>50° threshold)
 ### Common PETG Issues and Solutions
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Stringing | Excessive moisture or temp too high | Dry filament at 65°C for 6 hours; reduce nozzle temp by 5°C |
 | Warping | Insufficient bed temp or over-cooling | Increase bed temp to 80°C; reduce part cooling to 10% |
 | Poor layer adhesion | Nozzle temp too low or wet filament | Increase nozzle temp to 245°C; dry filament thoroughly |
@@ -187,7 +196,7 @@ Supports: Auto (>50° threshold)
 
 **Priority**: Strength and durability
 
-```
+```text
 Infill: 40% Gyroid
 Walls: 4
 Top/Bottom Layers: 5
@@ -199,7 +208,7 @@ Supports: Yes (auto-generated)
 
 **Priority**: High strength, heat resistance
 
-```
+```text
 Infill: 50% Gyroid or Honeycomb
 Walls: 5
 Top/Bottom Layers: 6
@@ -213,7 +222,7 @@ Supports: Yes (manual placement recommended)
 
 **Priority**: Maximum strength and precision
 
-```
+```text
 Infill: 100% Solid
 Walls: 4
 Top/Bottom Layers: 5
@@ -227,7 +236,7 @@ Supports: Minimal (design for printability)
 
 **Priority**: Fit tolerance and assembly ease
 
-```
+```text
 Infill: 20% Grid (lightweight)
 Walls: 3
 Top/Bottom Layers: 4
@@ -314,11 +323,13 @@ Set the shield's Nano switch to **V4** position for Arduino Nano 33 BLE Sense Re
 When using external 5V power to the shield (from buck converter) while the Arduino Nano is powered via USB from the Raspberry Pi, you **MUST** remove the GND jumper cap from the Servo power selection port.
 
 **Jumper Cap Configuration**:
+
 1. **Default Position**: The jumper cap is installed on the Servo power selection port connecting to USB (ships from factory in this position)
 2. **Required Action**: **REMOVE** the jumper cap entirely or move it to a safe position away from the Servo power selection port
 3. **Do NOT**: Leave the jumper cap connecting USB power to external servo power rail
 
 **Why This Matters (Jumper Logic)**:
+
 - The jumper cap in default position connects the Nano's USB 5V supply to the shield's servo/peripheral power rail
 - When external 5V (from buck converter) is supplied to the shield's servo terminals, the jumper creates a parallel connection between two power sources
 - This causes **voltage back-feeding** from the external regulator into the Arduino Nano's USB power circuit
@@ -339,11 +350,12 @@ The buck converter provides 5V power to the Nano I/O Shield's servo/peripheral t
 **Wiring Instructions**:
 
 | Buck Converter Terminal | Nano I/O Shield Terminal | Wire Gauge | Description |
-|------------------------|--------------------------|------------|-------------|
+| ------------------------ | -------------------------- | ------------ | ------------- |
 | 5V Output (Positive) | Servo Terminal VCC/+ | 22-20 AWG | Regulated 5V power for peripherals |
 | GND (Negative) | Servo Terminal GND/- | 22-20 AWG | Common ground return |
 
 **Connection Notes**:
+
 1. Use the servo terminal blocks on the Nano I/O Shield (typically labeled S1, S2, etc.)
 2. Connect buck converter 5V output to the **VCC/+** pin of any servo terminal
 3. Connect buck converter GND to the **GND/-** pin of the same servo terminal
@@ -352,6 +364,7 @@ The buck converter provides 5V power to the Nano I/O Shield's servo/peripheral t
 6. **Ensure jumper cap is removed** as described above before applying external power
 
 **Current Budget**:
+
 - Total load on shield 5V rail: Sensors, encoders, and peripherals (see BOM for detailed current analysis)
 - Buck converter capacity: 5A continuous (adequate margin for all shield loads)
 
@@ -373,6 +386,7 @@ The URM09 Ultrasonic Sensor connects to the Arduino Nano 33 BLE Sense Rev2 via t
 4. **I²C Address**: Default address is 0x11 (configurable via software if needed)
 
 **Mounting Notes**:
+
 - Mount sensor facing forward (same direction as Arduino Nano mini USB port)
 - Ensure clear line of sight for ultrasonic waves (no obstructions within 2-500cm range)
 - Sensor provides 1cm resolution with 1% accuracy for maze wall detection
@@ -384,6 +398,7 @@ For I²C communication protocol and Arduino firmware integration, see the [rr_bl
 The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) connects to the Raspberry Pi 4 Model B via UART for ROS 2 SLAM and mapping.
 
 **Important Notes**:
+
 - **DFR0566 GPIO Expansion HAT (Optional)**: The DFRobot GPIO Expansion HAT (DFR0566) provides convenient UART breakout terminals for connecting the D200 LIDAR. However, **the DFR0566 is optional** - the D200 can be connected directly to the Raspberry Pi GPIO pins. Both connection methods have been tested and verified to work. The DFR0566 simplifies wiring with screw terminals but direct GPIO connection is also fully supported.
 - **⚠️ WIRING CAVEAT**: The cable supplied with the D200 LIDAR **does not use standard wire colors**. Always verify wire functions against the official documentation: [LD14P Development Manual (PDF)](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf). Do not rely solely on wire colors - verify each wire's function before connecting.
 
@@ -405,6 +420,7 @@ The 360° Omni-directional Triangulation LIDAR (D200 Developer Kit with LD14P) c
 **⚠️ CRITICAL**: Wire colors shown above are based on common D200 cable configurations. **Always verify wire functions using a multimeter or by consulting the [LD14P Development Manual](https://files.waveshare.com/upload/9/99/LD14P_Development_Manual.pdf)** before making connections. The cable supplied with your device may use different colors.
 
 **Connection Explanation**:
+
 - The D200's standard 4-wire cable aligns perfectly with Pi UART polarity through DFR0566's passthrough UART terminals
 - **T terminal** (Transmit from Pi perspective) = Pi TX (GPIO14) → D200 RX (Red wire)
 - **R terminal** (Receive from Pi perspective) = Pi RX (GPIO15) → D200 TX (Green wire)
@@ -471,9 +487,11 @@ The Raspberry Pi's hardware UART must be enabled and configured for the D200 LID
 
 1. Open terminal on Raspberry Pi
 2. Run configuration utility:
+
    ```bash
    sudo raspi-config
    ```
+
 3. Navigate to: **Interface Options** → **Serial Port**
 4. Configure as follows:
    - **"Would you like a login shell to be accessible over serial?"** → Select **NO**
@@ -481,6 +499,7 @@ The Raspberry Pi's hardware UART must be enabled and configured for the D200 LID
    - **"Would you like the serial port hardware to be enabled?"** → Select **YES**
      - This enables the UART hardware interface
 5. Exit raspi-config and reboot:
+
    ```bash
    sudo reboot
    ```
@@ -488,6 +507,7 @@ The Raspberry Pi's hardware UART must be enabled and configured for the D200 LID
 **Verification**:
 
 After reboot, verify UART is enabled:
+
 ```bash
 ls -l /dev/serial0
 ```
@@ -497,6 +517,7 @@ Expected output should show `/dev/serial0` linked to `/dev/ttyAMA0` (hardware UA
 **Test LIDAR Wiring and Communication**:
 
 To verify the D200 LIDAR is properly connected and transmitting data:
+
 ```bash
 stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
 ```
@@ -504,6 +525,7 @@ stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
 **Expected Result**: You should see binary data streaming from the LIDAR. The output will appear as scrambled characters (this is normal - it's raw LIDAR scan data). Press `Ctrl+C` to stop.
 
 **If no data appears**:
+
 - Verify power connection (Black wire to 5V)
 - Check ground connection (White wire to GND)
 - Verify TX/RX connections are correct (Green to UART R, Red to UART T)
@@ -521,11 +543,13 @@ stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
    - This creates a loopback where transmitted data is immediately received back
 
 2. **Install minicom** (if not already installed):
+
    ```bash
    sudo apt-get install minicom
    ```
 
 3. **Launch minicom**:
+
    ```bash
    minicom -b 115200 -D /dev/ttyAMA0
    ```
@@ -545,6 +569,7 @@ stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
    - Remove the jumper wire before connecting the D200 LIDAR
 
 **Troubleshooting**:
+
 - If loopback test fails, verify UART is enabled in `raspi-config` (Interface Options → Serial Port)
 - Check `/boot/firmware/config.txt` for `enable_uart=1`
 - Ensure no other service is using `/dev/ttyAMA0` (check with `sudo lsof | grep ttyAMA0`)
@@ -559,11 +584,13 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
 **Installation**:
 
 1. **Install GPIO library dependency**:
+
    ```bash
    sudo apt install liblgpio-dev
    ```
 
 2. **Create temporary directory and download**:
+
    ```bash
    mkdir -p ${HOME}/tmp
    cd ${HOME}/tmp
@@ -572,6 +599,7 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
    ```
 
 3. **Verify download integrity**:
+
    ```bash
    sha256sum ./wiringpi_3.16_arm64.deb
    ```
@@ -581,19 +609,23 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
    ⚠️ **Do not proceed if the hash does not match** - re-download or check for updated release.
 
 4. **Install the package**:
+
    ```bash
    sudo apt install ./wiringpi_3.16_arm64.deb
    ```
 
 5. **Add user to GPIO group** (required for non-root GPIO access):
+
    ```bash
    sudo usermod -a -G gpio $USER
    ```
 
 6. **Set GPIO memory device permissions**:
+
    ```bash
    sudo chgrp gpio /dev/gpiomem
    ```
+
    This allows users in the `gpio` group to access GPIO memory directly.
 
    Log out and log back in for group membership to take effect.
@@ -607,6 +639,7 @@ gpio readall
 ```
 
 This displays a table showing all GPIO pins, their modes (IN/OUT/ALT), and current values. Use this to:
+
 - Verify UART pins (GPIO14/GPIO15) are in ALT mode for serial communication
 - Confirm GPIO pins are available for encoder inputs
 - Debug pin configuration issues before connecting hardware
@@ -645,11 +678,13 @@ The LD200 LIDAR (LD14P sensor) requires the `ldrobot-lidar-ros2` driver package 
 **Installation Instructions**:
 
 1. **Install dependencies**:
+
    ```bash
    sudo apt install libudev-dev
    ```
 
 2. **Clone the ldrobot-lidar-ros2 repository** into your ROS 2 workspace:
+
    ```bash
    cd ~/ros2_ws/src
    git clone https://github.com/Myzhar/ldrobot-lidar-ros2.git
@@ -670,6 +705,7 @@ The LD200 LIDAR (LD14P sensor) requires the `ldrobot-lidar-ros2` driver package 
    - Sets default serial port to `/dev/ttyAMA0` (Raspberry Pi hardware UART)
 
    **Verify patch applied successfully**:
+
    ```bash
    git diff --stat
    ```
@@ -677,17 +713,20 @@ The LD200 LIDAR (LD14P sensor) requires the `ldrobot-lidar-ros2` driver package 
    Expected output shows modifications to `ldlidar_component/CMakeLists.txt`, `ldlidar_node/CMakeLists.txt`, and `ldlidar_node/params/ldlidar.yaml`.
 
 4. **Install ROS dependencies**:
+
    ```bash
    cd ~/ros2_ws
    rosdep install --from-paths src --ignore-src -r -y
    ```
 
 5. **Build the package**:
+
    ```bash
    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --packages-select ldlidar ldlidar_component ldlidar_node
    ```
 
 6. **Source the workspace**:
+
    ```bash
    source ~/ros2_ws/install/setup.bash
    ```
@@ -697,11 +736,13 @@ The LD200 LIDAR (LD14P sensor) requires the `ldrobot-lidar-ros2` driver package 
 The LD200 LIDAR connects via UART and appears as `/dev/ttyAMA0` on both Raspberry Pi 4B and Raspberry Pi 5 (hardware UART).
 
 **Verify the device**:
+
 ```bash
 ls -l /dev/ttyAMA0
 ```
 
 **Test LIDAR Communication**:
+
 ```bash
 stty -F /dev/ttyAMA0 230400 && cat /dev/ttyAMA0
 ```
@@ -954,11 +995,78 @@ Each motor has a 6-pin connector with the following connections:
 
 For motor control and encoder reading firmware implementation, see the [rr_ble33_mousebot repository](https://github.com/Ryder-Robots/rr_ble33_mousebot).
 
+### BNO055 IMU — Technical Documentation
+
+#### Optional Pins and Their Purpose
+
+**P0 / P1** (not P50 — likely mislabelled on your board)
+
+Boot mode selection pins for the BNO055 chip. Both should be pulled low (GND) for normal I2C operation. The Adafruit breakout has onboard pull-down resistors so they're handled automatically — no wiring needed.
+
+**PS1**
+
+Protocol select pin — together with PS0 selects I2C or SPI mode. For I2C, PS1 should be low. Again, Adafruit handles this onboard — no wiring needed.
+
+**INT**
+
+Interrupt output pin — the BNO055 can assert this pin when certain events occur (motion detected, data ready, etc.). For basic IMU fusion output you don't need it — just poll via I2C at your node's update rate. Only wire it if you want interrupt-driven data acquisition, which adds complexity for marginal benefit given you're reading at a fixed rate anyway.
+
+**ADR**
+
+I2C address select. Pull low → address 0x28, pull high → address 0x29. Useful if you have two BNO055s on the same bus. The Adafruit breakout defaults to 0x28 with ADR unconnected. Only wire it if you have an address conflict.
+
+#### Summary — Required Connections
+
+For this use case you only need:
+
+| Pin | Description |
+|-----|-------------|
+| VIN | Power supply |
+| GND | Ground |
+| SDA | I2C data |
+| SCL | I2C clock |
+| RST | Optional — for software reset |
+
+INT and ADR can be left unconnected.
+
+#### Verifying BNO055 I2C Connection
+
+**Note**: This step should be performed on your development box only. Once the software is installed and wiring is confirmed correct, it is not required for normal operation.
+
+Requires `i2c-tools` to be installed:
+
+```bash
+sudo apt install i2c-tools
+```
+
+Run the I2C bus scan to verify the BNO055 is detected:
+
+```bash
+i2cdetect -y 1
+```
+
+Expected output with BNO055 at default address 0x28:
+
+```text
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:                         -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- -- -- -- -- -- 28 -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- --
+```
+
+The `28` at position 0x28 confirms the BNO055 is correctly wired and responding on the I2C bus. If nothing appears, check SDA/SCL connections and ensure the sensor is powered.
+
 ---
 
 ## Material Storage
 
 **PETG Storage Recommendations**:
+
 - Store in airtight container with desiccant packets
 - Ideal humidity: <15% RH
 - If stored >1 week, re-dry at 60°C for 2-4 hours before use
@@ -969,6 +1077,7 @@ For motor control and encoder reading firmware implementation, see the [rr_ble33
 ## ABS Configuration (Future)
 
 ABS settings for final production builds will be documented here once prototyping phase is complete. ABS requires:
+
 - Higher temperatures (230-260°C nozzle, 100-110°C bed)
 - Enclosed chamber (mandatory)
 - Reduced cooling
