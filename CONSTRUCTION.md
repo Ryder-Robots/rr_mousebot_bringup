@@ -558,7 +558,12 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
 
 **Installation**:
 
-1. **Create temporary directory and download**:
+1. **Install GPIO library dependency**:
+   ```bash
+   sudo apt install liblgpio-dev
+   ```
+
+2. **Create temporary directory and download**:
    ```bash
    mkdir -p ${HOME}/tmp
    cd ${HOME}/tmp
@@ -566,7 +571,7 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
    chmod 755 ${HOME}/tmp
    ```
 
-2. **Verify download integrity**:
+3. **Verify download integrity**:
    ```bash
    sha256sum ./wiringpi_3.16_arm64.deb
    ```
@@ -575,17 +580,17 @@ WiringPi provides a convenient command-line tool for testing and verifying GPIO 
 
    ⚠️ **Do not proceed if the hash does not match** - re-download or check for updated release.
 
-3. **Install the package**:
+4. **Install the package**:
    ```bash
    sudo apt install ./wiringpi_3.16_arm64.deb
    ```
 
-4. **Add user to GPIO group** (required for non-root GPIO access):
+5. **Add user to GPIO group** (required for non-root GPIO access):
    ```bash
    sudo usermod -a -G gpio $USER
    ```
 
-5. **Set GPIO memory device permissions**:
+6. **Set GPIO memory device permissions**:
    ```bash
    sudo chgrp gpio /dev/gpiomem
    ```
