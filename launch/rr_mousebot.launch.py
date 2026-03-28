@@ -117,6 +117,14 @@ def generate_launch_description():
                 # ),
             ],
         ),
+        Node(
+            package='rr_bosch_lc_base',
+            executable='rr_bosch_sensor_main',
+            name='rr_bosch_sensor_main',
+            namespace='sensors',
+            output='screen',
+            arguments=['--ns', 'sensors'],
+        ),
         TimerAction(
             period=3.0,
             actions=[
@@ -130,11 +138,8 @@ def generate_launch_description():
                     'bond_timeout': 4.0,
                     'node_names': [
             #             'lidar_node',
+                        '/sensors/rr_bosch_imu_node',
                         '/driver/motor_controller',
-            #             '/driver/serial_bridge_node',
-            #             '/driver/udp_receiver_node',
-            #             '/driver/udp_sender_node',
-            #             '/sensor/rr_imu_action_node',
                     ]
                 }],
             ),
