@@ -124,6 +124,9 @@ def generate_launch_description():
             namespace='sensors',
             output='screen',
             arguments=['--ns', 'sensors'],
+            parameters=[{
+                'requires_calibration': False,
+            }],
         ),
         TimerAction(
             period=3.0,
