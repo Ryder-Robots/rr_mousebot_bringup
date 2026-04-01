@@ -52,40 +52,40 @@ def generate_launch_description():
             arguments=['--ros-args', '--log-level', 'debug'],
             composable_node_descriptions=[
 
-                ComposableNode(
-                    package='rr_motor_controller',
-                    plugin='rr_motor_controller::RrECU',
-                    name='motor_controller',
-                    namespace='driver',
-                    parameters=[{
-                        'motor_count': 2,
-                        'ppr': 8,
-                        'wheel_radius': 20,   # 20 mm radius = 40 mm diameter wheels
-                        'wheel_base':   70,   # 70 mm between left and right wheel contact points
-                        'pwm_freq': 1000,
-                        # One pin per motor: index 0 = left, index 1 = right
-                        #
-                        # Note: for wiring, B represents H-Bridge B and A represents A on H-bridge
-                        'encoder_pins': [17, 22],    # LEFT=17 (B), RIGHT=22 (A)
-                        'pwm_pins':     [12, 13],    # LEFT=12(HW PWM0 B), RIGHT=13(HW PWM1 A)
-                        'dir_pins':     [27, 23],    # LEFT=27 (B), RIGHT=23 (A)
-                        'encoder_timeout': 500000,
-                        # Raspberry Pi 4B GPIO plugin — see https://github.com/Ryder-Robots/rr_gpio_pi4b_pigpio_plugin
-                        'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
-                        # 6×6 row-major pose covariance [x, y, z, roll, pitch, yaw].
-                        # Diagonal: x=0.01, y=0.01, z=1e6, roll=1e6, pitch=1e6, yaw=0.01
-                        # z, roll, pitch set to 1e6 — not tracked on a flat floor.
-                        'covariance': [
-                            0.01, 0.0,  0.0,  0.0,  0.0,  0.0,
-                            0.0,  0.01, 0.0,  0.0,  0.0,  0.0,
-                            0.0,  0.0,  1e6,  0.0,  0.0,  0.0,
-                            0.0,  0.0,  0.0,  1e6,  0.0,  0.0,
-                            0.0,  0.0,  0.0,  0.0,  1e6,  0.0,
-                            0.0,  0.0,  0.0,  0.0,  0.0,  0.01,
-                        ],
-                    }],
-                    extra_arguments=[{'use_intra_process_comms': True}],
-                ),
+                # ComposableNode(
+                #     package='rr_motor_controller',
+                #     plugin='rr_motor_controller::RrECU',
+                #     name='motor_controller',
+                #     namespace='driver',
+                #     parameters=[{
+                #         'motor_count': 2,
+                #         'ppr': 8,
+                #         'wheel_radius': 20,   # 20 mm radius = 40 mm diameter wheels
+                #         'wheel_base':   70,   # 70 mm between left and right wheel contact points
+                #         'pwm_freq': 1000,
+                #         # One pin per motor: index 0 = left, index 1 = right
+                #         #
+                #         # Note: for wiring, B represents H-Bridge B and A represents A on H-bridge
+                #         'encoder_pins': [17, 22],    # LEFT=17 (B), RIGHT=22 (A)
+                #         'pwm_pins':     [12, 13],    # LEFT=12(HW PWM0 B), RIGHT=13(HW PWM1 A)
+                #         'dir_pins':     [27, 23],    # LEFT=27 (B), RIGHT=23 (A)
+                #         'encoder_timeout': 500000,
+                #         # Raspberry Pi 4B GPIO plugin — see https://github.com/Ryder-Robots/rr_gpio_pi4b_pigpio_plugin
+                #         'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
+                #         # 6×6 row-major pose covariance [x, y, z, roll, pitch, yaw].
+                #         # Diagonal: x=0.01, y=0.01, z=1e6, roll=1e6, pitch=1e6, yaw=0.01
+                #         # z, roll, pitch set to 1e6 — not tracked on a flat floor.
+                #         'covariance': [
+                #             0.01, 0.0,  0.0,  0.0,  0.0,  0.0,
+                #             0.0,  0.01, 0.0,  0.0,  0.0,  0.0,
+                #             0.0,  0.0,  1e6,  0.0,  0.0,  0.0,
+                #             0.0,  0.0,  0.0,  1e6,  0.0,  0.0,
+                #             0.0,  0.0,  0.0,  0.0,  1e6,  0.0,
+                #             0.0,  0.0,  0.0,  0.0,  0.0,  0.01,
+                #         ],
+                #     }],
+                #     extra_arguments=[{'use_intra_process_comms': True}],
+                # ),
 
                 # Note that this is a lifecycle node within this version
                 # ComposableNode(
@@ -134,12 +134,12 @@ def generate_launch_description():
                 name='lifecycle_manager_navigation',
                 output='screen',
                 parameters=[{
-                    'autostart': False,
+                    'autostart': True,
                     'bond_timeout': 4.0,
                     'node_names': [
             #             'lidar_node',
                         '/sensors/rr_bosch_imu_node',
-                        '/driver/motor_controller',
+            #             '/driver/motor_controller',
                     ]
                 }],
             ),
