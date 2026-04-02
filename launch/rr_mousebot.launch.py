@@ -137,7 +137,7 @@ def generate_launch_description():
                 output='screen',
                 parameters=[{
                     'autostart': True,
-                    'bond_timeout': 4.0,
+                    'bond_timeout': 15.0,
                     'node_names': [
             #             'lidar_node',
                         '/sensors/rr_bosch_imu_node',
