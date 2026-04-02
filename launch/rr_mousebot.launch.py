@@ -120,7 +120,6 @@ def generate_launch_description():
         Node(
             package='rr_bosch_lc_base',
             executable='rr_bosch_sensor_main',
-            name='rr_bosch_sensor_main',
             namespace='sensors',
             output='screen',
             arguments=['--ns', 'sensors'],
