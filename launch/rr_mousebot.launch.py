@@ -29,19 +29,19 @@ def generate_launch_description():
     """Launch composable nodes."""
 
     # Include LDLidar launch
-    # ldlidar_launch = IncludeLaunchDescription(
-    #     launch_description_source=PythonLaunchDescriptionSource([
-    #         get_package_share_directory('ldlidar_node'),
-    #         '/launch/ldlidar_bringup.launch.py'
-    #     ]),
-    #     launch_arguments={
-    #         'node_name': 'ldlidar_node'
-    #     }.items()
-    # )
+    ldlidar_launch = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource([
+            get_package_share_directory('ldlidar_node'),
+            '/launch/ldlidar_bringup.launch.py'
+        ]),
+        launch_arguments={
+            'node_name': 'ldlidar_node'
+        }.items()
+    )
 
     return launch.LaunchDescription([
         # Include LDLidar bringup (lifecycle node)
-        # ldlidar_launch,
+        ldlidar_launch,
 
         # Low level communications, serial, and UDP, or bridges to flight controller.
         ComposableNodeContainer(
@@ -70,6 +70,7 @@ def generate_launch_description():
                         'pwm_pins':     [12, 13],    # LEFT=12(HW PWM0 B), RIGHT=13(HW PWM1 A)
                         'dir_pins':     [27, 23],    # LEFT=27 (B), RIGHT=23 (A)
                         'encoder_timeout': 500000,
+                        # 'ttl_ns': 500000000,   # 500 ms command TTL — re-enable once validated with fresh batteries
                         # Raspberry Pi 4B GPIO plugin — see https://github.com/Ryder-Robots/rr_gpio_pi4b_pigpio_plugin
                         'transport_plugin': 'rr_gpio_pi4b_pigpio_plugin::RrGpioPi4BPigpioPlugin',
                         # 6×6 row-major pose covariance [x, y, z, roll, pitch, yaw].
@@ -139,7 +140,7 @@ def generate_launch_description():
                     'autostart': True,
                     'bond_timeout': 15.0,
                     'node_names': [
-            #             'lidar_node',
+                        'ldlidar_node',
                         '/sensors/rr_bosch_imu_node',
                         '/driver/motor_controller',
                     ]
