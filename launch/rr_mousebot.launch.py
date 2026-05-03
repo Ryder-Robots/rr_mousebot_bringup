@@ -28,6 +28,14 @@ from launch.actions import TimerAction
 def generate_launch_description():
     """Launch composable nodes."""
 
+    # GPIO map (BCM numbering)
+    # 2,3   — I2C1 SDA/SCL (BNO055)
+    # 12,13 — HW PWM0/1 (motor driver)
+    # 14,15 — UART TX/RX (LIDAR serial)
+    # 17,22 — encoder A/B
+    # 23,27 — motor direction
+    # 24    — LIDAR 5V MOSFET switch (CE09733), driven high in LIDAR node on_activate
+
     # Include LDLidar launch
     ldlidar_launch = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource([

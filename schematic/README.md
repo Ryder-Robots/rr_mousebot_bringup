@@ -81,14 +81,13 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 |-----------|-----|----------|---------------------|----------|-------|
 | Raspberry Pi 4 Model B 8GB | CE06974 | 1 | $145.00 | [Core Electronics](https://core-electronics.com.au/raspberry-pi-4-model-b-8gb.html) | Main compute platform for ROS 2 and navigation algorithms. 1.5GHz quad-core ARM Cortex-A72, Gigabit Ethernet, dual-band WiFi, Bluetooth 5.0. Typical current: ~3A at 5V |
 | IO Expansion HAT for Raspberry Pi 4B/3B+ | DFR0566 | 1 | $17.50 | [Core Electronics](https://core-electronics.com.au/io-expansion-hat-for-raspberry-pi-4b-3b.html) | DFRobot GPIO expansion HAT. Provides UART, I²C, SPI, PWM, and digital I/O breakout terminals. 65×56mm. D200 LIDAR connects to UART terminals (T/R/5V/GND). Compatible with Gravity Series sensors |
-| Arduino Nano 33 BLE Sense Rev2 | ABX00069 | 1 | $98.13 | [Core Electronics](https://core-electronics.com.au/arduino-nano-33-ble-sense-rev2.html) | nRF52840 microcontroller (64MHz, 1MB Flash, 256KB RAM). Includes 9-axis IMU, temp/humidity, pressure, proximity/gesture sensors, and digital mic. Bluetooth 5 via NINA B306. 3.3V I/O, ~50mA typical current. Handles real-time motor control and sensor interfacing |
-| Nano I/O Shield For Arduino Nano | DFR0012 | 1 | $12.95 | [Core Electronics](https://core-electronics.com.au/nano-i-o-shield-for-arduino-nano.html) | Expansion board with Gravity connectors for sensor/servo connections. Compatible with Arduino Nano 33 BLE Sense Rev2 |
 
 ### Sensors
 
 | Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
 |-----------|-----|----------|---------------------|----------|-------|
 | 360° Omni-directional Triangulation Lidar Dev Kit (8m range) | WS-24659 | 1 | $94.10 | [Core Electronics](https://core-electronics.com.au/360-omni-directional-triangulation-lidar-dev-kit-8m-range.html) | D200 Developer Kit with LD14P Lidar. 8m range, ±1.5% accuracy, 360° scanning, 4000Hz ranging frequency, UART @ 230400 baud (/dev/ttyAMA0 on Pi 4B/Pi 5). 5V DC, ≤300mA operating current. Includes UART to USB adapter. ROS 2 driver: https://github.com/Myzhar/ldrobot-lidar-ros2 (native lifecycle node, use model `LDLiDAR_LD19` for D200/LD14P). For SLAM, mapping, and obstacle detection |
+| Adafruit BNO055 Absolute Orientation Sensor | CE04489 | 1 | $65.95 | [Core Electronics](https://core-electronics.com.au/adafruit-9-dof-absolute-orientation-imu-fusion-breakout-bno055.html) | Bosch BNO055 9-axis IMU. Provides fused absolute orientation (quaternion, Euler angles), angular velocity, and linear acceleration. I²C interface, address 0x28 (default) on /dev/i2c-1. 3.3V logic compatible. Onboard sensor fusion handles magnetometer calibration. Connects to DFR0566 HAT I²C terminals. ROS 2 driver: rr_bosch_lc_base |
 
 ### Motor Control
 
@@ -96,6 +95,13 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 |-----------|-----|----------|---------------------|----------|-------|
 | Micro DC Geared Motor w/ Encoder - SJ01 6V 160RPM 120:1 | FIT0450 | 2 | $13.20 | [Core Electronics](https://core-electronics.com.au/micro-dc-geared-motor-w-encoder-sj01-6v-160rpm-120-1.html) | DFRobot micro DC motor with integrated Hall effect encoder. 120:1 gear ratio, 160 RPM @ 6V, stall torque 0.8 kg.cm. Operating voltage: 3-6V DC, no-load current 45mA, stall current 350mA. Encoder: 16 PPR (pulses per revolution of motor shaft), 1920 counts per revolution at output shaft (16 PPR × 120 gear ratio). Compact design: 25mm length (including output shaft). Includes pre-soldered 6-pin connector. Wiki: https://wiki.dfrobot.com/Micro_DC_Motor_with_Encoder-SJ01_SKU__FIT0450 |
 | Makerverse Motor Driver 2 Channel | CE08038 | 1 | $7.20 | [Core Electronics](https://core-electronics.com.au/makerverse-motor-driver-2-channel.html) | Dual H-bridge motor driver. 1.6A continuous (2A peak), 3-16V input, compatible with 3.3V/5V logic. Includes thermal protection, reverse-polarity protection, and 5V regulator. 35x30mm with M3 mounting holes |
+
+### Electrical Interface
+
+| Component | SKU | Quantity | Unit Price (inc GST) | Supplier | Notes |
+|-----------|-----|----------|---------------------|----------|-------|
+| Logic Level Converter - Bidirectional | BOB-12009 | 1 | $2.95 | [Core Electronics](https://core-electronics.com.au/logic-level-converter-bidirectional.html) | SparkFun bidirectional 4-channel logic level converter. Shifts signals between 3.3V (Pi GPIO) and 5V (LIDAR, motor driver). Used in GPIO-controlled LIDAR power switch circuit |
+| MOSFET Power Switch Module | CE09733 | 1 | $1.35 | [Core Electronics](https://core-electronics.com.au/mosfet-power-switch-module.html) | GPIO-controlled MOSFET power switch. **GPIO 24** controls 5V rail to LIDAR, held low during boot to prevent UART flooding on /dev/ttyAMA0. Software-controlled power-on in LIDAR node on_activate |
 
 ### Power System
 
@@ -116,7 +122,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 ### BOM Notes
 
-- **Total Component Cost** (listed items only): ~$463 AUD (excludes battery charger and 3D printed parts)
+- **Total Component Cost** (listed items only): ~$422 AUD (excludes battery charger and 3D printed parts)
 
 - **Power System Summary**: 2S Li-ion configuration (2x 18650 cells in series)
   - Nominal voltage: 7.4V (fresh), ~5.5V (under load/partially discharged)
@@ -124,8 +130,8 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - Continuous discharge: 7A (3.5A per cell)
   - Peak discharge: 20A (10A per cell, 5 seconds)
   - **Buck Converter Configuration** (adjust using flathead screwdriver):
-    - Single converter: 5.5V → 5.0V rail for Raspberry Pi only (3.0A continuous load)
-    - Arduino Nano 33 BLE Sense Rev2: Powered via USB from Raspberry Pi (included in Pi's power budget)
+    - Single converter: 5.5V → 5.0V rail for Raspberry Pi, LIDAR, and BNO055 (3.0A continuous load)
+    - BNO055 IMU: Powered via DFR0566 HAT I²C rail (3.3V, included in Pi's power budget)
   - Motor power: Battery voltage (7.4V nominal, 5.5V under load) direct from battery through motor driver
 
 - **Battery Charging**:
@@ -136,8 +142,8 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 
 - **Total Current Load Analysis** (at 5.5V battery voltage under load):
   - **5V Rail** (via Buck Converter):
-    - Raspberry Pi 4: 3.0A (typical under load, includes USB power to Arduino Nano)
-    - Arduino Nano 33 BLE Sense Rev2: 0.05A (powered via USB from Raspberry Pi, included in Pi's budget)
+    - Raspberry Pi 4: 3.0A (typical under load)
+    - BNO055 IMU: ~0.01A (via DFR0566 HAT, included in Pi's budget)
     - LD14P Lidar: 0.3A (300mA operating current)
     - Motor Driver Control: 0.01A (minimal)
     - **Subtotal 5V Rail**: 3.36A (buck converter rated 5A, 67% utilization)
@@ -168,17 +174,9 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
   - Motor driver provides 1.6A continuous capacity (>2x safety margin for typical operation, handles stall current)
 
 - **Assembly Notes**:
-  - **Nano I/O Shield (DFR0012) Configuration (CRITICAL)**:
-    - **Nano Switch Setting**: Set the shield's Nano switch to **V4** position for Arduino Nano 33 BLE Sense Rev2 compatibility
-      - This routes I²C signals (A4/SDA, A5/SCL) correctly to the Rev2's integrated I²C pins
-      - Incorrect switch position will cause I²C communication failures with sensors
-    - **GND Jumper Cap Configuration**: Move the GND jumper cap **away** from the Servo power selection port (default USB position) when supplying external 5V to the shield while using USB on the Nano for communication
-      - **Jumper Logic**: This isolates servo/peripheral power from the Nano's USB supply, preventing back-feeding that could damage the microcontroller
-      - External 5V powers shield loads directly via the servo terminals while USB provides separate communication and Nano power
-      - **IMPORTANT**: Failure to move the jumper cap when using external power can result in voltage back-feeding and permanent damage to the Arduino Nano 33 BLE Sense Rev2
   - Buck converter requires tuning with flathead screwdriver to achieve precise 5.0V output
   - Use multimeter to verify output voltage before connecting to Raspberry Pi
-  - Arduino Nano 33 BLE Sense Rev2 powered via USB connection from Raspberry Pi (no separate power rail needed)
+  - BNO055 IMU connects to DFR0566 HAT I²C terminals (SDA/SCL/3.3V/GND). Default I²C address: 0x28
   - Brass heat-set inserts (ADA4256) provide threaded mounting points in 3D printed chassis for M3 screws
 
 - **Additional Components Required** (not listed above):
@@ -194,7 +192,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 ### Component Selection Rationale
 
 - **Raspberry Pi 4 8GB**: Provides adequate computational power for ROS 2 nodes, SLAM algorithms, and path planning. 8GB RAM ensures headroom for development and debugging. 3A typical current draw fits within 5A buck converter capacity
-- **Arduino Nano 33 BLE Sense Rev2**: Powerful nRF52840 microcontroller (64MHz, 1MB Flash) handles real-time motor control and sensor interfacing. Integrated 9-axis IMU, environmental sensors, and Bluetooth 5 provide extensive sensing capabilities beyond basic motor control. Low power consumption (50mA typical) and 3.3V I/O compatible with modern sensors
+- **BNO055 IMU**: Dedicated 9-axis orientation sensor with onboard sensor fusion. Provides quaternion output and linear acceleration directly — no fusion computation on the Pi. I²C interface integrates cleanly with the DFR0566 HAT and is natively supported by rr_bosch_lc_base as a ROS 2 lifecycle component. Eliminates the Arduino layer, simplifying the stack and reducing latency on the IMU data path
 - **360° LIDAR (LD14P)**: 8m range exceeds maze dimensions (~2.5m), ±1.5% accuracy suitable for 18cm grid navigation. 360° scanning at 4000Hz ranging frequency enables comprehensive SLAM and obstacle detection. UART interface @ 230400 baud on /dev/ttyAMA0 (Raspberry Pi hardware UART, compatible with both Pi 4B and Pi 5). Low power consumption (≤300mA) with native ROS 2 Lifecycle node support via ldrobot-lidar-ros2 driver (https://github.com/Myzhar/ldrobot-lidar-ros2) - use `model: 'LDLiDAR_LD19'` for D200/LD14P sensor. Includes D200 developer kit with UART to USB adapter
 - **Micro DC Geared Motors with Encoders (FIT0450)**: Ultra-compact design (25mm length) fits within tight micromouse footprint. 120:1 gear ratio provides excellent balance between speed (160 RPM @ 6V) and torque (0.8 kg.cm stall) for maze navigation. Integrated Hall effect encoder (16 PPR motor shaft = 1920 counts/rev at output shaft) eliminates need for separate encoder modules. Low power consumption: 45mA no-load, ~100mA typical operation. Pre-soldered 6-pin connector simplifies wiring. Comprehensive documentation: https://wiki.dfrobot.com/Micro_DC_Motor_with_Encoder-SJ01_SKU__FIT0450
 - **Motor Driver**: 1.6A continuous current rating provides adequate safety margin (>8x for typical 200mA operation, >2x for 700mA stall current). Dual H-bridge enables independent bidirectional control for differential drive. Built-in 5V regulator, thermal protection, and compact form factor (35x30mm) with M3 mounting holes
