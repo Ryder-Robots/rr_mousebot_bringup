@@ -203,6 +203,84 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 - **Caster Wheel**: Small form factor (32.4mm) provides additional support point for stability during omnidirectional maneuvers
 - **Mounting Hardware**: M3 standoffs provide secure mounting for motor driver and other electronics while maintaining proper spacing from chassis
 
+## Electrical Circuits
+
+### LIDAR Power Control — GPIO 24 via P-Channel MOSFET + NPN Inverter
+
+The MOSFET Power Switch Module (CE09733) uses a **P-channel MOSFET**, which is active LOW on the SIG pin (SIG LOW = output ON, SIG HIGH = output OFF). Without an inverter, the floating GPIO at boot would leave SIG pulled low by default, powering the LIDAR immediately and flooding `/dev/ttyAMA0` before the ROS 2 driver is ready.
+
+An NPN transistor inverter with a pull-up resistor solves this: the pull-up holds SIG HIGH at boot (LIDAR OFF), and driving GPIO 24 HIGH turns the NPN on, pulling SIG LOW (LIDAR ON).
+
+**Logic table:**
+
+| GPIO 24 | NPN | MOSFET SIG | LIDAR |
+|---------|-----|------------|-------|
+| Float / LOW (boot) | OFF | HIGH (pull-up) | OFF ✅ |
+| HIGH (software) | ON | LOW (pulled to GND) | ON ✅ |
+| LOW (software) | OFF | HIGH (pull-up) | OFF ✅ |
+
+**Components required:**
+
+| Component | Value | Notes |
+| ----------- | ------- | ------- |
+| R1 | 1kΩ | Base resistor, GPIO 24 → NPN base |
+| R2 | 10kΩ | Pull-up, 3.3V → MOSFET SIG |
+| Q1 | NPN transistor | 2N2222, BC547, BC548, or S8050 |
+
+**ASCII Schematic:**
+
+```text
+3.3V ─────────────────────────────────┐
+                                      │
+                                     R2
+                                    10kΩ
+                                      │
+                                      ├──────────── MOSFET SIG
+                                      │
+Pi GPIO 24 ──── R1 ──── B            │
+               1kΩ      │  Q1 (NPN)  │
+                        C ───────────┘
+                        E
+                        │
+GND ────────────────────┴──────────────────────────
+
+MOSFET Power Switch Module (CE09733):
+                                      
+  5V Buck ──── [VIN │ P-CH MOSFET │ VOUT] ──── LIDAR 5V (red)
+                    [     SIG     ]
+                         │
+                    (from NPN collector / R2 pull-up)
+
+LIDAR GND ──── GND rail
+LIDAR TX  ──── /dev/ttyAMA0 RX  (Pi GPIO 15)
+LIDAR RX  ──── /dev/ttyAMA0 TX  (Pi GPIO 14)
+```
+
+**Physical wiring summary:**
+
+```text
+Pi header pin 18  (GPIO 24) ──── R1 (1kΩ) ──── Q1 base
+Pi header pin 1   (3.3V)    ──── R2 (10kΩ) ─── Q1 collector ──── MOSFET SIG
+Pi header pin 6   (GND)     ──── Q1 emitter
+Buck 5V output              ──── MOSFET VIN
+MOSFET VOUT                 ──── LIDAR 5V (red wire)
+GND rail                    ──── LIDAR GND (black wire)
+```
+
+**Software control (lgpio):**
+
+```python
+import lgpio
+h = lgpio.gpiochip_open(0)
+lgpio.gpio_claim_output(h, 24)
+lgpio.gpio_write(h, 24, 1)   # LIDAR ON
+lgpio.gpio_write(h, 24, 0)   # LIDAR OFF
+```
+
+> **Note:** `gpiozero` on Ubuntu 24.04 requires `lgpio` as its backend. Install with `sudo apt install python3-lgpio`. Without it, GPIO commands succeed silently but produce no output.
+
+---
+
 ## Design Workflow
 
 1. **Individual Component Design**: Each mechanical and electrical component is designed in its own FreeCAD file with accurate dimensions and mounting features.
@@ -219,6 +297,7 @@ This section lists the commercial off-the-shelf (COTS) components required to bu
 ## STL Subdirectory
 
 The [stl/](stl/) subdirectory is reserved for STL (stereolithography) files that will be generated from the FreeCAD designs. These STL files will be:
+
 - Optimized for 3D printing
 - Properly oriented for minimal support material
 - Scaled to actual dimensions
